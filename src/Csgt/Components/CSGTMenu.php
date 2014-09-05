@@ -31,6 +31,8 @@ class CSGTMenu {
 		}
 		//dd($padres);
 		//Ahora hay que buscar los padres, abuelos, etc y enviarlos tambien en el array de retorno
+		if (count($padres)==0) return $arr;
+
 		$papas = DB::table('authmenu AS m')
 			->leftJoin('authmodulopermisos AS mp', 'mp.modulopermisoid','=','m.modulopermisoid')
 			->leftJoin('authmodulos AS mo','mo.moduloid','=','mp.moduloid')
@@ -53,6 +55,7 @@ class CSGTMenu {
 			if ($temp<>0) $padres[] = $temp;
 		}
 		//dd($padres);
+		if (count($padres)==0) return $arr;
 
 		$abuelos = DB::table('authmenu AS m')
 			->leftJoin('authmodulopermisos AS mp', 'mp.modulopermisoid','=','m.modulopermisoid')
