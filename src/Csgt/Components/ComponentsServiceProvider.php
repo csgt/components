@@ -21,6 +21,7 @@ class ComponentsServiceProvider extends ServiceProvider {
 		$this->package('csgt/components');
 		AliasLoader::getInstance()->alias('CSGTMenu','Csgt\Components\CSGTMenu');
 		include __DIR__.'/../../filters.php';
+		include __DIR__.'/../../routes.php';
 	}
 
 	/**
