@@ -13,7 +13,8 @@
     },
     "autoload": {
         "classmap": [
-            "src/controllers"
+            "src/controllers",
+            "src/views"
         ],
         "psr-0": {
             "Csgt\\Components\\": "src/"
