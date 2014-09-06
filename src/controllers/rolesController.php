@@ -17,12 +17,12 @@ class rolesController extends BaseController {
 		$this->crud->setCampo(array('nombre'=>'Descripci&oacute;n','campo'=>'descripcion','tipo'=>'string'));
 
 		if(!$this->cancerbero->isGod()) {
-			$this->crud->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
+			$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('catalogo'));
 			$this->crud->setWhere('rolid', '<>', $this->cancerbero->getGodRol());
 		}
 		else
-			$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('catalogo'));
-
+			$this->crud->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
+			
 		$this->crud->setBotonExtra(array('url'=>'cancerbero/asignar', 'class'=>'warning', 'icon'=>'glyphicon glyphicon-lock', 'titulo'=>'Asignar Permisos'));
 	}
 
