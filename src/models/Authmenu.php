@@ -1,9 +1,6 @@
 <?php 
 
-namespace Csgt\Components;
-use DB, Auth;
-
-class CSGTMenu {
+class Authmenu {
 	public static function getMenuForRole() {
 		$arr = array();
 		$padres = array();
