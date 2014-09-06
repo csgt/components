@@ -18,7 +18,8 @@ class usuariosController extends BaseController {
 
 		$this->crud->setCampo(array('nombre'=>'Nombre','campo'=>'authusuarios.nombre','tipo'=>'string'));
 		$this->crud->setCampo(array('nombre'=>'Email','campo'=>'authusuarios.email','tipo'=>'string'));
-		$this->crud->setCampo(array('nombre'=>'Rol','campo'=>'r.nombre','tipo'=>'combobox','query'=>'SELECT nombre,rolid FROM authroles ORDER BY nombre','combokey'=>'rolid'));
+		$this->crud->setCampo(array('nombre'=>'Rol','campo'=>'r.nombre','tipo'=>'combobox',
+				'query'=>'SELECT nombre,rolid FROM authroles ORDER BY nombre','combokey'=>'rolid'));
 		$this->crud->setCampo(array('nombre'=>'Creado','campo'=>'authusuarios.created_at','tipo'=>'datetime','editable'=>false));
 		$this->crud->setCampo(array('nombre'=>'Activo','campo'=>'authusuarios.activo','tipo'=>'bool'));
 
