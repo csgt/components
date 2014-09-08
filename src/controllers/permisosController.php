@@ -5,18 +5,18 @@ class permisosController extends BaseController {
 	private $crud, $cancerbero;
 
 	public function __construct() {
-		$this->cancerbero = new Cancerbero;
 		$this->crud       = new Crud;
 
-		$this->crud->setExport(true);
+		$this->crud->setExport(false);
 		$this->crud->setTitulo('Permisos');
 		$this->crud->setTablaId('permisoid');
 		$this->crud->setTabla('authpermisos');
 		
-		$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('catalogo'));
+		$this->crud->setPermisos(array('add'=>true,'edit'=>true,'delete'=>true));
 
 		$this->crud->setCampo(array('nombre'=>'Nombre','campo'=>'nombre','tipo'=>'string'));
 		$this->crud->setCampo(array('nombre'=>'Nombre Usuario','campo'=>'nombrefriendly','tipo'=>'string'));
+
 	}
 
 	public function index() {

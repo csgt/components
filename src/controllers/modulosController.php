@@ -13,11 +13,12 @@ class modulosController extends BaseController {
 		$this->crud->setTablaId('moduloid');
 		$this->crud->setTabla('authmodulos');
 		
-		$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('catalogo'));
+		$this->crud->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
 
 		$this->crud->setCampo(array('nombre'=>'Nombre','campo'=>'nombre','tipo'=>'string'));
 		$this->crud->setCampo(array('nombre'=>'Nombre Usuario','campo'=>'nombrefriendly','tipo'=>'string'));
 		$this->crud->setCampo(array('nombre'=>'Descripci&oacute;n','campo'=>'descripcion','tipo'=>'string'));
+
 	}
 
 	public function index() {

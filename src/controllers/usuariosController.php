@@ -26,8 +26,12 @@ class usuariosController extends BaseController {
 		$this->crud->setCampo(array('nombre'=>'Activo','campo'=>'authusuarios.activo','tipo'=>'bool'));
 		$this->crud->setCampo(array('nombre'=>'Password','campo'=>'authusuarios.password','tipo'=>'password','show'=>false));
 
-		if(!$this->cancerbero->isGod())
+		if(!$this->cancerbero->isGod()) {
+			$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('catalogo'));
 			$this->crud->setWhere('authusuarios.rolid', '<>', $this->cancerbero->getGodRol());
+		}
+		else
+			$this->crud->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
 	}
 
 	public function index() {
