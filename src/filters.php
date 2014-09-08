@@ -9,7 +9,9 @@ Route::filter('menu', function(){
 });
 
 Route::filter('god', function(){
-	if(!$this->cancerbero->isGod()) 
+	$cancerbero = new Cancerbero;
+
+	if(!$cancerbero->isGod()) 
 		return View::make('cancerbero::error')->with('mensaje', $result->error . ' (' . Route::currentRouteName() . ')');
 });
 
