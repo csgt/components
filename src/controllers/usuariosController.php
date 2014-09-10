@@ -27,7 +27,7 @@ class usuariosController extends BaseController {
 		$this->crud->setCampo(array('nombre'=>'Password','campo'=>'authusuarios.password','tipo'=>'password','show'=>false));
 
 		if(!$this->cancerbero->isGod()) {
-			$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('catalogo'));
+			$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('usuarios'));
 			$this->crud->setWhere('authusuarios.rolid', '<>', $this->cancerbero->getGodRol());
 		}
 		else

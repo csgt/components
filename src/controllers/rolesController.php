@@ -17,7 +17,7 @@ class rolesController extends BaseController {
 		$this->crud->setCampo(array('nombre'=>'Descripci&oacute;n','campo'=>'descripcion','tipo'=>'string'));
 
 		if(!$this->cancerbero->isGod()) {
-			$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('catalogo'));
+			$this->crud->setPermisos($this->cancerbero->tienePermisosCrud('roles'));
 			$this->crud->setWhere('rolid', '<>', $this->cancerbero->getGodRol());
 		}
 		else
