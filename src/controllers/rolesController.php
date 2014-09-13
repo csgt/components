@@ -23,7 +23,7 @@ class rolesController extends BaseController {
 		else
 			$this->crud->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
 			
-		$this->crud->setBotonExtra(array('url'=>'cancerbero/asignar', 'class'=>'warning', 'icon'=>'glyphicon glyphicon-lock', 'titulo'=>'Asignar Permisos'));
+		$this->crud->setBotonExtra(array('url'=>'cancerbero/asignar/{id}', 'class'=>'warning', 'icon'=>'glyphicon glyphicon-lock', 'titulo'=>'Asignar Permisos'));
 	}
 
 	public function index() {
