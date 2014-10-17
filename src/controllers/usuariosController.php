@@ -14,7 +14,6 @@ class usuariosController extends BaseController {
 		$this->crud->setTabla('authusuarios');
 		
 		$this->crud->setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
-		$this->crud->setLeftJoin('equipos AS e', 'authusuarios.equipoid', '=', 'e.equipoid');
 
 		$this->crud->setCampo(array('nombre'=>'Usuarioid','campo'=>'authusuarios.usuarioid'));
 		$this->crud->setCampo(array('nombre'=>'Nombre','campo'=>'authusuarios.nombre','reglas' => array('notEmpty'), 
