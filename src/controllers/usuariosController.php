@@ -13,13 +13,16 @@ class usuariosController extends BaseController {
 		$this->crud->setTablaId('usuarioid');
 		$this->crud->setTabla('authusuarios');
 		
-		$this->crud->setPermisos(array('add'=>true,'edit'=>true,'delete'=>true));
 		$this->crud->setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
+		$this->crud->setLeftJoin('equipos AS e', 'authusuarios.equipoid', '=', 'e.equipoid');
 
+		$this->crud->setCampo(array('nombre'=>'Usuarioid','campo'=>'authusuarios.usuarioid'));
 		$this->crud->setCampo(array('nombre'=>'Nombre','campo'=>'authusuarios.nombre','reglas' => array('notEmpty'), 
 			'reglasmensaje'=>'El nombre es requerido', 'tipo'=>'string'));
 		$this->crud->setCampo(array('nombre'=>'Email','campo'=>'authusuarios.email', 'reglas' => array('notEmpty','emailAddress'), 
 			'reglasmensaje'=>'Formato de email inv&aacute;lido', 'tipo'=>'string'));
+		$this->crud->setCampo(array('nombre'=>'Equipo','campo'=>'e.nombre','tipo'=>'combobox',
+				'query'=>'SELECT nombre,equipoid FROM equipos ORDER BY nombre','combokey'=>'equipoid'));
 		$this->crud->setCampo(array('nombre'=>'Rol','campo'=>'r.nombre','tipo'=>'combobox',
 				'query'=>'SELECT nombre,rolid FROM authroles ORDER BY nombre','combokey'=>'rolid'));
 		$this->crud->setCampo(array('nombre'=>'Creado','campo'=>'authusuarios.created_at','tipo'=>'datetime','editable'=>false));
