@@ -15,7 +15,6 @@ class usuariosController extends BaseController {
 		
 		$this->crud->setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
 
-		$this->crud->setCampo(array('nombre'=>'Usuarioid','campo'=>'authusuarios.usuarioid'));
 		$this->crud->setCampo(array('nombre'=>'Nombre','campo'=>'authusuarios.nombre','reglas' => array('notEmpty'), 
 			'reglasmensaje'=>'El nombre es requerido', 'tipo'=>'string'));
 		$this->crud->setCampo(array('nombre'=>'Email','campo'=>'authusuarios.email', 'reglas' => array('notEmpty','emailAddress'), 
