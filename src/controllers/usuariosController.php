@@ -21,8 +21,6 @@ class usuariosController extends BaseController {
 			'reglasmensaje'=>'El nombre es requerido', 'tipo'=>'string'));
 		$this->crud->setCampo(array('nombre'=>'Email','campo'=>'authusuarios.email', 'reglas' => array('notEmpty','emailAddress'), 
 			'reglasmensaje'=>'Formato de email inv&aacute;lido', 'tipo'=>'string'));
-		$this->crud->setCampo(array('nombre'=>'Equipo','campo'=>'e.nombre','tipo'=>'combobox',
-				'query'=>'SELECT nombre,equipoid FROM equipos ORDER BY nombre','combokey'=>'equipoid'));
 		$this->crud->setCampo(array('nombre'=>'Rol','campo'=>'r.nombre','tipo'=>'combobox',
 				'query'=>'SELECT nombre,rolid FROM authroles ORDER BY nombre','combokey'=>'rolid'));
 		$this->crud->setCampo(array('nombre'=>'Creado','campo'=>'authusuarios.created_at','tipo'=>'datetime','editable'=>false));
