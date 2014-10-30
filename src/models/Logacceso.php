@@ -9,6 +9,7 @@ class Logacceso {
 			->select('fechalogin','ip')
 			->where('usuarioid',Auth::id())
 			->orderBy('fechalogin','DESC')
+			->skip(1)
 			->first();
 	}
 }

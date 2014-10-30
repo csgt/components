@@ -17,8 +17,6 @@ class modulosController extends BaseController {
 
 		$this->crud->setCampo(array('nombre'=>'Nombre','campo'=>'nombre','tipo'=>'string'));
 		$this->crud->setCampo(array('nombre'=>'Nombre Usuario','campo'=>'nombrefriendly','tipo'=>'string'));
-		$this->crud->setCampo(array('nombre'=>'Descripci&oacute;n','campo'=>'descripcion','tipo'=>'string'));
-
 	}
 
 	public function index() {
