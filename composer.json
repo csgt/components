@@ -15,7 +15,8 @@
         "classmap": [
             "src/controllers",
             "src/views",
-            "src/models"
+            "src/models",
+            "src/migrations"
         ],
         "psr-0": {
             "Csgt\\Components\\": "src/"
