@@ -6,8 +6,10 @@ use Illuminate\Database\Migrations\Migration;
 class AgregarGoogleIdAUsuarios extends Migration {
 
 	public function up() {
+		if (!Schema::hasColumn('authusuarios', 'googleid')) {
 			Schema::table('authusuarios', function($t) {
-    	$t->string('googleid',100)->nullable()->after('rolid');
+    		$t->string('googleid',100)->nullable()->after('rolid');
+			});
 		});
 	}
 
