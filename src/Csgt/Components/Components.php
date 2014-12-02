@@ -32,4 +32,34 @@ class Components {
 		return DB::select(DB::raw($query));
 	}
 
+	public static function fechaHumanoAMysql($aFecha, $aHora=false) {
+		if ($aHora) {
+			$fh = explode(' ', $aFecha);
+			$laFecha = $fh[0];
+		}
+		else
+			$laFecha = $aFecha;
+
+		$partes = explode('/', $laFecha);
+		if (sizeof($partes)==1)
+			$partes = explode('-', $laFecha);
+
+		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ($aHora?' ' . $fh[1]:'');
+	}
+
+	public static function fechaMysqlAHumano($aFecha, $aHora=false) {
+		if ($aHora) {
+			$fh = explode(' ', $aFecha);
+			$laFecha = $fh[0];
+		}
+		else
+			$laFecha = $aFecha;
+
+		$partes = explode('/', $laFecha);
+		if (sizeof($partes)==1)
+			$partes = explode('-', $laFecha);
+
+		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ($aHora?' ' . $fh[1]:'');
+	}
+
 }
