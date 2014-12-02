@@ -35,9 +35,8 @@ class Components {
 	public static function fechaHumanoAMysql($aFecha) {
 		
 		$fh = explode(' ', $aFecha);
-		if (sizeof($fh)==2)
+		if (sizeof($fh)==2) 
 			$laFecha = $fh[0];
-		}
 		else
 			$laFecha = $aFecha;
 
@@ -53,7 +52,6 @@ class Components {
 		$fh = explode(' ', $aFecha);
 		if (sizeof($fh)==2)
 			$laFecha = $fh[0];
-		}
 		else
 			$laFecha = $aFecha;
 
