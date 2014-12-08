@@ -11,15 +11,11 @@ class usuariosController extends crudController {
 		
 		Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
 
-		Crud::setCampo(array('nombre'=>'Nombre','campo'=>'authusuarios.nombre','reglas' => array('notEmpty'), 
-			'reglasmensaje'=>'El nombre es requerido', 'tipo'=>'string'));
-		Crud::setCampo(array('nombre'=>'Email','campo'=>'authusuarios.email', 'reglas' => array('notEmpty','emailAddress'), 
-			'reglasmensaje'=>'Formato de email inv&aacute;lido', 'tipo'=>'string'));
-		Crud::setCampo(array('nombre'=>'Rol','campo'=>'r.nombre','tipo'=>'combobox',
-				'query'=>'SELECT nombre,rolid FROM authroles ORDER BY nombre','combokey'=>'rolid'));
-		Crud::setCampo(array('nombre'=>'Creado','campo'=>'authusuarios.created_at','tipo'=>'datetime','editable'=>false));
+		Crud::setCampo(array('nombre'=>'Nombre','campo'=>'authusuarios.nombre'));
+		Crud::setCampo(array('nombre'=>'Email','campo'=>'authusuarios.email'));
+		Crud::setCampo(array('nombre'=>'Rol','campo'=>'r.nombre'));
+		Crud::setCampo(array('nombre'=>'Creado','campo'=>'authusuarios.created_at'));
 		Crud::setCampo(array('nombre'=>'Activo','campo'=>'authusuarios.activo','tipo'=>'bool'));
-		Crud::setCampo(array('nombre'=>'Password','campo'=>'authusuarios.password','tipo'=>'password','show'=>false));
 
 		if(!Cancerbero::isGod()) {
 			Crud::setPermisos(Cancerbero::tienePermisosCrud('usuarios'));
@@ -28,4 +24,50 @@ class usuariosController extends crudController {
 		else
 			Crud::setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
 	}
+
+
+	public function edit($id) {
+		$data = DB::table('authusuarios')
+			->where('usuarioid', Crypt::decrypt($id))
+			->first();
+
+		$roles = DB::table('authroles')
+			->select('nombre','rolid')
+			->orderBy('nombre')
+			->where('rolid','<>',Config::get('cancerbero::rolbackdoor'));
+		if ($data) {
+			$roles = $roles->orWhere('rolid', $data->rolid);
+		}
+
+		$roles = $roles->get();
+
+		return View::make('components::usuarioEdit')
+			->with('roles', $roles)
+			->with('data', $data)
+			->with('id', $id);
+	}
+
+	public function create() {
+    return self::edit(Crypt::encrypt(0));
+	}
+
+	public function store() {
+		$id = Input::get('id');
+
+		$pass = Input::get('password');
+		if ($id=='')
+			$usuario = new Authusuario;
+		else
+			$usuario = Authusuario::find(Crypt::decrypt($id));
+
+		$usuario->nombre = Input::get('nombre');
+		$usuario->email = Input::get('email');
+		$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
+		if ($pass<>'')
+			$usuario->password = Hash::make(Input::get('password'));
+		$usuario->activo = (Input::has('activo')?1:0);
+		$usuario->save();
+		return Redirect::route('usuarios.index');
+	}
+
 }
