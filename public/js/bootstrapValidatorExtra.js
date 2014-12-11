@@ -30,16 +30,11 @@
 
       for (var i=0; i<=fin; i++) {
         valor = nit.charAt(i);
-        console.log('valor: ' + valor + ' i: ' + i);
         suma  = suma + (valor*factor);
-        console.log(suma);
         factor--;
       };
 
       var mod11 = (11-(suma % 11)) % 11;
-      console.log('NIT: ' + nit);
-      console.log('Mod11: ' + mod11);
-      console.log('Verificador: ' + verificador);
       if (mod11!=verificador) {
         return {
           valid: false,
