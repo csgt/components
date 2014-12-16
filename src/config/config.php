@@ -1,6 +1,6 @@
 <?php
 return array(
 
-	'multiplesroles' => true,
+	'multiplesroles' => false,
 
 );
