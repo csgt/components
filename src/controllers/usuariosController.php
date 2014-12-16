@@ -41,9 +41,17 @@ class usuariosController extends crudController {
 
 		$roles = $roles->get();
 
+		$usuarioroles = array();
+		if(Config::get('components::multiplesroles')) {
+			$usuarioroles = DB::table('authusuarioroles')
+				->where('usuarioid', Auth::id())
+				->lists('rolid');
+		}
+
 		return View::make('components::usuarioEdit')
 			->with('roles', $roles)
 			->with('data', $data)
+			->with('uroles', $usuarioroles)
 			->with('id', $id);
 	}
 
@@ -62,11 +70,28 @@ class usuariosController extends crudController {
 
 		$usuario->nombre = Input::get('nombre');
 		$usuario->email = Input::get('email');
-		$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
+
 		if ($pass<>'')
 			$usuario->password = Hash::make(Input::get('password'));
 		$usuario->activo = (Input::has('activo')?1:0);
-		$usuario->save();
+
+		if(!Config::get('components::multiplesroles')){
+			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
+			$usuario->save();
+		}
+
+		else{
+			$roles = Input::get('rolid');
+
+			$usuario->rolid  = Crypt::decrypt($roles[0]);
+			$usuario->save();
+
+			foreach($roles as $rol) {
+				DB::table('authusuarioroles')
+					->insert(array('rolid'=>Crypt::decrypt($rol),'usuarioid'=>$usuario->usuarioid));
+			}
+		}		
+		
 		return Redirect::route('usuarios.index');
 	}
 

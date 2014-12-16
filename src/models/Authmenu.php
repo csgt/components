@@ -12,6 +12,16 @@ class Authmenu {
 	}
 
 	function getMenuForRole() {
+		$usuarioroles = array();
+		if(Config::get('components::multiplesroles')) {
+			$usuarioroles = DB::table('authusuarioroles')
+				->where('usuarioid', Auth::id())
+				->lists('rolid');
+		}
+
+		else
+			$usuarioroles[] = Auth::user()->rolid;
+
 		//Guardamos un array de padres para solo abrir el dataset una vez
 		$menus = DB::table('authmenu AS m')
 			->select('menuid','padreid')
@@ -27,7 +37,7 @@ class Authmenu {
 			->leftJoin('authmodulos AS mo','mo.moduloid','=','mp.moduloid')
 			->leftJoin('authpermisos AS p','p.permisoid','=','mp.permisoid')
 			->select('m.menuid', DB::raw('IFNULL(m.padreid,0) AS padreid'))
-			->where('rmp.rolid', Auth::user()->rolid)
+			->whereIn('rmp.rolid', $usuarioroles)
 			->get();
 		foreach ($permisos as $menu) {
 			$this->menuIds[] = $menu->menuid;

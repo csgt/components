@@ -2,9 +2,9 @@
 
 Route::filter('menu', function(){
 	if(!Session::has('menu')){
-		$elMenu    = new Menu;
+		$elMenu     = new Menu;
 		$elAuthMenu = new Authmenu;
-		$menuItems = $elAuthMenu->getMenuForRole();
+		$menuItems  = $elAuthMenu->getMenuForRole();
 		Session::put('menu', $elMenu->generarMenu($menuItems));
 	}		
 });
