@@ -13,7 +13,38 @@ class Components {
         ['country' => 'Guatemala', 'currency' => 'Q', 'singular' => 'QUETZAL', 'plural' => 'QUETZALES', 'symbol', 'Q'],
         ['country' => 'Estados Unidos', 'currency' => 'USD', 'singular' => 'DÓLAR', 'plural' => 'DÓLARES', 'symbol', 'US$']];
 
+  private function convertGroup($n) {
+    $output = '';
+    if ($n == '100') 
+      $output = "CIEN ";
+    else if ($n[0] !== '0') 
+      $output = $this->centenas[$n[0] - 1];   
+
+    $k = intval(substr($n,1));
+
+    if ($k <= 20) {
+      $output .= $this->unidades[$k];
+    } 
+    else {
+      if(($k > 30) && ($n[2] !== '0')) 
+        $output .= sprintf('%sY %s', $this->decenas[intval($n[1]) - 2], $this->unidades[intval($n[2])]);
+      else 
+        $output .= sprintf('%s%s', $this->decenas[intval($n[1]) - 2], $this->unidades[intval($n[2])]);
+    }
+    return $output;
+  }
+  
 	public static function getMenuForRole() {
+		$usuarioroles = array();
+		if(Config::get('components::multiplesroles')) {
+			$usuarioroles = DB::table('authusuarioroles')
+				->where('usuarioid', Auth::id())
+				->lists('rolid');
+		}
+
+		else
+			$usuarioroles[] = Auth::user()->rolid;
+
 		$query = 'SELECT * FROM authmenu WHERE ruta IN (
 			SELECT 
 				CONCAT(IF(m.nombre<>\'index\',m.nombre,\'/\'), IF(p.nombre<>\'index\',CONCAT(\'/\',p.nombre),\'\')) AS ruta 
@@ -23,7 +54,7 @@ class Components {
 				LEFT JOIN authmodulos m ON (m.moduloid=mp.moduloid)
 				LEFT JOIN authpermisos p ON (p.permisoid=mp.permisoid)
 			WHERE
-				rmp.rolid=' . Auth::user()->rolid . '
+				rmp.rolid IN(' . $usuarioroles . ')
 			)
 			OR menuid IN (
 			SELECT padreid FROM authmenu WHERE ruta IN (
@@ -35,7 +66,7 @@ class Components {
 				LEFT JOIN authmodulos m ON (m.moduloid=mp.moduloid)
 				LEFT JOIN authpermisos p ON (p.permisoid=mp.permisoid)
 			WHERE
-				rmp.rolid=' . Auth::user()->rolid . '
+				rmp.rolid IN(' . $usuarioroles . ')
 			) AND padreid IS NOT NULL
 			) ORDER BY padreid, orden';
 		return DB::select(DB::raw($query));
@@ -105,24 +136,33 @@ class Components {
     return trim($converted);
   }
 
-  private function convertGroup($n) {
-    $output = '';
-    if ($n == '100') 
-      $output = "CIEN ";
-    else if ($n[0] !== '0') 
-      $output = $this->centenas[$n[0] - 1];   
+	public static function fechaHumanoAMysql($aFecha) {
+		
+		$fh = explode(' ', $aFecha);
+		if (sizeof($fh)==2) 
+			$laFecha = $fh[0];
+		else
+			$laFecha = $aFecha;
 
-    $k = intval(substr($n,1));
+		$partes = explode('/', $laFecha);
+		if (sizeof($partes)==1)
+			$partes = explode('-', $laFecha);
 
-    if ($k <= 20) {
-      $output .= $this->unidades[$k];
-    } 
-    else {
-      if(($k > 30) && ($n[2] !== '0')) 
-        $output .= sprintf('%sY %s', $this->decenas[intval($n[1]) - 2], $this->unidades[intval($n[2])]);
-      else 
-        $output .= sprintf('%s%s', $this->decenas[intval($n[1]) - 2], $this->unidades[intval($n[2])]);
-    }
-    return $output;
-  }
+		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ((sizeof($fh)==2)?' ' . $fh[1]:'');
+	}
+
+	public static function fechaMysqlAHumano($aFecha) {
+
+		$fh = explode(' ', $aFecha);
+		if (sizeof($fh)==2)
+			$laFecha = $fh[0];
+		else
+			$laFecha = $aFecha;
+
+		$partes = explode('/', $laFecha);
+		if (sizeof($partes)==1)
+			$partes = explode('-', $laFecha);
+
+		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ((sizeof($fh)==2)?' ' . $fh[1]:'');
+	}
 }

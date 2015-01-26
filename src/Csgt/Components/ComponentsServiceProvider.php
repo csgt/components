@@ -10,6 +10,7 @@ class ComponentsServiceProvider extends ServiceProvider {
 	public function boot() {
 		$this->package('csgt/components');
 		AliasLoader::getInstance()->alias('CSGTMenu','Csgt\Components\CSGTMenu');
+		AliasLoader::getInstance()->alias('Components','Csgt\Components\Components');
 		include __DIR__.'/../../filters.php';
 		include __DIR__.'/../../routes.php';
 	}
