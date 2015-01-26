@@ -4,32 +4,33 @@ namespace Csgt\Components;
 use DB, Auth;
 
 class Components {
-	private $unidades = array('','UN ','DOS ','TRES ','CUATRO ','CINCO ','SEIS ','SIETE ','OCHO ','NUEVE ','DIEZ ',
-    'ONCE ','DOCE ','TRECE ','CATORCE ','QUINCE ','DIECISEIS ','DIECISIETE ','DIECIOCHO ','DIECINUEVE ','VEINTE ');
-  private $decenas  = array('VENTI','TREINTA ','CUARENTA ','CINCUENTA ','SESENTA ','SETENTA ','OCHENTA ','NOVENTA ','CIEN ');
-  private $centenas = array('CIENTO ','DOSCIENTOS ','TRESCIENTOS ','CUATROCIENTOS ','QUINIENTOS ',
-    'SEISCIENTOS ','SETECIENTOS ','OCHOCIENTOS ','NOVECIENTOS ');
   private $monedas = array(
         array('country' => 'Guatemala', 'currency' => 'Q', 'singular' => 'QUETZAL', 'plural' => 'QUETZALES', 'symbol', 'Q'),
         array('country' => 'Estados Unidos', 'currency' => 'USD', 'singular' => 'DÓLAR', 'plural' => 'DÓLARES', 'symbol', 'US$'));
 
-  private function convertGroup($n) {
+  private static function convertGroup($n) {
+    $unidades = array('','UN ','DOS ','TRES ','CUATRO ','CINCO ','SEIS ','SIETE ','OCHO ','NUEVE ','DIEZ ',
+    'ONCE ','DOCE ','TRECE ','CATORCE ','QUINCE ','DIECISEIS ','DIECISIETE ','DIECIOCHO ','DIECINUEVE ','VEINTE ');
+    $decenas  = array('VENTI','TREINTA ','CUARENTA ','CINCUENTA ','SESENTA ','SETENTA ','OCHENTA ','NOVENTA ','CIEN ');
+    $centenas = array('CIENTO ','DOSCIENTOS ','TRESCIENTOS ','CUATROCIENTOS ','QUINIENTOS ',
+    'SEISCIENTOS ','SETECIENTOS ','OCHOCIENTOS ','NOVECIENTOS ');
+
     $output = '';
     if ($n == '100') 
       $output = "CIEN ";
     else if ($n[0] !== '0') 
-      $output = self::centenas[$n[0] - 1];   
+      $output = $centenas[$n[0] - 1];   
 
     $k = intval(substr($n,1));
 
     if ($k <= 20) {
-      $output .= self::unidades[$k];
+      $output .= $unidades[$k];
     } 
     else {
       if(($k > 30) && ($n[2] !== '0')) 
-        $output .= sprintf('%sY %s', self::decenas[intval($n[1]) - 2], self::unidades[intval($n[2])]);
+        $output .= sprintf('%sY %s', $decenas[intval($n[1]) - 2], $unidades[intval($n[2])]);
       else 
-        $output .= sprintf('%s%s', self::decenas[intval($n[1]) - 2], self::unidades[intval($n[2])]);
+        $output .= sprintf('%s%s', $decenas[intval($n[1]) - 2], $unidades[intval($n[2])]);
     }
     return $output;
   }
@@ -75,7 +76,7 @@ class Components {
 	public static function numeroALetras($aNumero, $aMoneda=null) {  
     if ($aMoneda !== null) {
       try {
-        $moneda = array_filter(self::MONEDAS, function($m) use ($aMoneda) {
+        $moneda = array_filter(self::$monedas, function($m) use ($aMoneda) {
         	return ($m['currency'] == $aMoneda);
         });
 
