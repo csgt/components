@@ -139,7 +139,7 @@ class Components {
     if (count($enteroDecimal)>1) {
       $enteroDecimal[1] = substr($enteroDecimal[1],0,$aDecimales);
       if ($enteroDecimal[1]<>'')
-        $converted .= ' CON ' . $enteroDecimal[1] . ' ';
+        $converted .= ' PUNTO ' . self::numeroALetras($enteroDecimal[1]) . ' ';
     }
 
     $converted .= $moneda;
