@@ -4,7 +4,7 @@ namespace Csgt\Components;
 use DB, Auth;
 
 class Components {
-  private $monedas = array(
+  private static $monedas = array(
         array('country' => 'Guatemala', 'currency' => 'Q', 'singular' => 'QUETZAL', 'plural' => 'QUETZALES', 'symbol', 'Q'),
         array('country' => 'Estados Unidos', 'currency' => 'USD', 'singular' => 'DÓLAR', 'plural' => 'DÓLARES', 'symbol', 'US$'));
 
@@ -73,7 +73,11 @@ class Components {
 		return DB::select(DB::raw($query));
 	}
 
-	public static function numeroALetras($aNumero, $aMoneda=null) {  
+	public static function numeroALetras($aNumero, $aMoneda=null, $aDecimales=0) {
+    $aNumero = str_replace(',', '', $aNumero); //Quitar las comas  
+    $enteroDecimal = explode('.', $aNumero);
+    $aNumero = $enteroDecimal[0];
+
     if ($aMoneda !== null) {
       try {
         $moneda = array_filter(self::$monedas, function($m) use ($aMoneda) {
@@ -103,7 +107,7 @@ class Components {
     $converted = '';
 
     if (($aNumero < 0) || ($aNumero > 999999999)) {
-        return 'No es posible convertir el numero a letras';
+      return 'No es posible convertir el numero a letras';
     }
 
 		$aNumeroStr     = (string) $aNumero;
@@ -131,6 +135,11 @@ class Components {
         $converted .= 'UN ';
       else if (intval($cientos) > 0) 
         $converted .= sprintf('%s ', self::convertGroup($cientos));
+    }
+    if (count($enteroDecimal)>1) {
+      $enteroDecimal[1] = substr($enteroDecimal[1],0,$aDecimales);
+      if ($enteroDecimal[1]<>'')
+        $converted .= ' CON ' . $enteroDecimal[1] . ' ';
     }
 
     $converted .= $moneda;
