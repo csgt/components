@@ -18,18 +18,18 @@ class Components {
     if ($n == '100') 
       $output = "CIEN ";
     else if ($n[0] !== '0') 
-      $output = $this->centenas[$n[0] - 1];   
+      $output = self::centenas[$n[0] - 1];   
 
     $k = intval(substr($n,1));
 
     if ($k <= 20) {
-      $output .= $this->unidades[$k];
+      $output .= self::unidades[$k];
     } 
     else {
       if(($k > 30) && ($n[2] !== '0')) 
-        $output .= sprintf('%sY %s', $this->decenas[intval($n[1]) - 2], $this->unidades[intval($n[2])]);
+        $output .= sprintf('%sY %s', self::decenas[intval($n[1]) - 2], self::unidades[intval($n[2])]);
       else 
-        $output .= sprintf('%s%s', $this->decenas[intval($n[1]) - 2], $this->unidades[intval($n[2])]);
+        $output .= sprintf('%s%s', self::decenas[intval($n[1]) - 2], self::unidades[intval($n[2])]);
     }
     return $output;
   }
@@ -72,10 +72,10 @@ class Components {
 		return DB::select(DB::raw($query));
 	}
 
-	public static function numerosALetras($aNumero, $aMoneda=null) {  
+	public static function numeroALetras($aNumero, $aMoneda=null) {  
     if ($aMoneda !== null) {
       try {
-        $moneda = array_filter($this->MONEDAS, function($m) use ($aMoneda) {
+        $moneda = array_filter(self::MONEDAS, function($m) use ($aMoneda) {
         	return ($m['currency'] == $aMoneda);
         });
 
@@ -115,21 +115,21 @@ class Components {
       if ($millones == '001') 
         $converted .= 'UN MILLON ';
       else if (intval($millones) > 0) 
-        $converted .= sprintf('%sMILLONES ', $this->convertGroup($millones));
+        $converted .= sprintf('%sMILLONES ', self::convertGroup($millones));
     }
     
     if (intval($miles) > 0) {
       if ($miles == '001') 
         $converted .= 'MIL ';
       else if (intval($miles) > 0)
-        $converted .= sprintf('%sMIL ', $this->convertGroup($miles));
+        $converted .= sprintf('%sMIL ', self::convertGroup($miles));
     }
 
     if (intval($cientos) > 0) {
       if ($cientos == '001') 
         $converted .= 'UN ';
       else if (intval($cientos) > 0) 
-        $converted .= sprintf('%s ', $this->convertGroup($cientos));
+        $converted .= sprintf('%s ', self::convertGroup($cientos));
     }
 
     $converted .= $moneda;
