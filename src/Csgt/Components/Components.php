@@ -87,7 +87,7 @@ class Components {
         $moneda = array_values($moneda);
 
         if (count($moneda) <= 0) {
-          throw new Exception("Tipo de moneda inválido");
+          throw new \Exception("Tipo de moneda inválido");
           return;
         }
 
@@ -96,7 +96,7 @@ class Components {
         } else {
           $moneda = $moneda[0]['plural'];
         }
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
         echo $e->getMessage();
         return;
       }
