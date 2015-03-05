@@ -40,8 +40,11 @@
 					value        = "{{ $data?$data->email:'' }}" 
 					autocomplete = "off" 
 	      	data-bv-notempty = "true"
+	      	<?php if(Config::get('login::usuario.tipo')=='email') { ?>
 	      	data-bv-emailAddress = "true"
-	      	data-bv-emailAddress-message = "Correo inválido">
+	      	data-bv-emailAddress-message = "Correo inválido"
+					<?php } ?>
+	      	>
 	    </div>
 	  </div>
 	  <div class="form-group">
