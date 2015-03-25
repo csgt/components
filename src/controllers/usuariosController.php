@@ -15,7 +15,7 @@ class usuariosController extends crudController {
 		Crud::setCampo(array('nombre'=>'Nombre','campo'=>'authusuarios.nombre'));
 		Crud::setCampo(array('nombre'=>'Email','campo'=>'authusuarios.email'));
 		Crud::setCampo(array('nombre'=>'Rol','campo'=>'r.nombre'));
-		Crud::setCampo(array('nombre'=>'Creado','campo'=>'authusuarios.created_at'));
+		Crud::setCampo(array('nombre'=>'Creado','campo'=>'authusuarios.created_at', 'tipo'=>'datetime'));
 		Crud::setCampo(array('nombre'=>'Activo','campo'=>'authusuarios.activo','tipo'=>'bool'));
 
 		if(!Cancerbero::isGod()) {
