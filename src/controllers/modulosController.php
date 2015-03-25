@@ -7,6 +7,7 @@ class modulosController extends crudController {
 		Crud::setTitulo('M&oacute;dulos');
 		Crud::setTablaId('moduloid');
 		Crud::setTabla('authmodulos');
+		Crud::setTemplate(Config::get('components::config.template','template.template'));
 		
 		Crud::setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
 

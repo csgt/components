@@ -7,6 +7,7 @@ class permisosController extends crudController {
 		Crud::setTitulo('Permisos');
 		Crud::setTablaId('permisoid');
 		Crud::setTabla('authpermisos');
+		Crud::setTemplate(Config::get('components::config.template','template.template'));
 		
 		Crud::setPermisos(array('add'=>true,'edit'=>true,'delete'=>true));
 

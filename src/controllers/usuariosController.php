@@ -8,6 +8,7 @@ class usuariosController extends crudController {
 		Crud::setTitulo('Usuarios');
 		Crud::setTablaId('usuarioid');
 		Crud::setTabla('authusuarios');
+		Crud::setTemplate(Config::get('components::config.template','template.template'));
 		
 		Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
 

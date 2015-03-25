@@ -7,6 +7,7 @@ class rolesController extends crudController {
 		Crud::setTitulo('Roles');
 		Crud::setTablaId('rolid');
 		Crud::setTabla('authroles');
+		Crud::setTemplate(Config::get('components::config.template','template.template'));
 		
 		Crud::setCampo(array('nombre'=>'Nombre','campo'=>'nombre','tipo'=>'string'));
 		Crud::setCampo(array('nombre'=>'Descripci&oacute;n','campo'=>'descripcion','tipo'=>'string'));
