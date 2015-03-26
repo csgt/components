@@ -50,6 +50,7 @@ class usuariosController extends crudController {
 		}
 
 		return View::make('components::usuarioEdit')
+			->with('template', Config::get('components::config.template','template.template'))
 			->with('roles', $roles)
 			->with('data', $data)
 			->with('uroles', $usuarioroles)

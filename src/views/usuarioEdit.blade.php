@@ -1,4 +1,4 @@
-@extends('template/template')
+@extends($template)
 
 @section('content')
 	<h3 class="text-primary">{{$data?'Editar':'Nuevo'}} Usuario</h3>
