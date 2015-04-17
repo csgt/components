@@ -50,7 +50,7 @@
 	  <div class="form-group">
       <label for="rolid" class="col-sm-2 control-label">Rol</label>
       <div class="col-sm-10">
-      @if(Config::get('components::multiplesroles'))
+      @if(Config::get('cancerbero::multiplesroles'))
       	<select name="rolid[]" class="selectpicker" data-bv-notempty="true" multiple>
       		@foreach ($roles as $rol)
       			<option value="{{Crypt::encrypt($rol->rolid)}}" {{ (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') }}>{{$rol->nombre}}</option>

@@ -9,6 +9,9 @@ class usuariosController extends crudController {
 		Crud::setTablaId('usuarioid');
 		Crud::setTabla('authusuarios');
 		Crud::setTemplate(Config::get('components::config.template','template.template'));
+
+		if(Config::get('components::usuariossoftdelete'))
+			Crud::setSoftDelete(true);
 		
 		Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
 
@@ -43,7 +46,7 @@ class usuariosController extends crudController {
 		$roles = $roles->get();
 
 		$usuarioroles = array();
-		if(Config::get('components::multiplesroles')) {
+		if(Config::get('cancerbero::multiplesroles')) {
 			$usuarioroles = DB::table('authusuarioroles')
 				->where('usuarioid', Auth::id())
 				->lists('rolid');
@@ -77,7 +80,7 @@ class usuariosController extends crudController {
 			$usuario->password = Hash::make(Input::get('password'));
 		$usuario->activo = (Input::has('activo')?1:0);
 
-		if(!Config::get('components::multiplesroles')){
+		if(!Config::get('cancerbero::multiplesroles')){
 			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
 			$usuario->save();
 		}

@@ -37,7 +37,7 @@ class Components {
   
 	public static function getMenuForRole() {
 		$usuarioroles = array();
-		if(Config::get('components::multiplesroles')) {
+		if(Config::get('cancerbero::multiplesroles')) {
 			$usuarioroles = DB::table('authusuarioroles')
 				->where('usuarioid', Auth::id())
 				->lists('rolid');
