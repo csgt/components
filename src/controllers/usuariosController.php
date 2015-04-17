@@ -100,4 +100,28 @@ class usuariosController extends crudController {
 		return Redirect::route('usuarios.index');
 	}
 
+	public static function destroy($aId) {
+
+		try{
+			if (self::$softDelete){
+				$query = DB::table(self::$tabla)
+					->where(self::$tablaId, Crypt::decrypt($aId))
+					->update(array('deleted_at'=>date_create(), Config::get('login::password.campo') =>''));
+			}
+			else
+				$query = DB::table(self::$tabla)
+					->where(self::$tablaId, Crypt::decrypt($aId))
+					->delete();
+
+			Session::flash('message', 'Registro borrado exitosamente');
+			Session::flash('type', 'warning');
+
+		} catch (\Exception $e) {
+			Session::flash('message', 'Error al borrar campo. Revisar datos relacionados.');
+			Session::flash('type', 'danger');
+		}
+
+		return Redirect::to('/usuarios');
+	}
+
 }
