@@ -100,7 +100,7 @@ class usuariosController extends crudController {
 		return Redirect::route('usuarios.index');
 	}
 
-	public static function destroy($aId) {
+	public function destroy($aId) {
 
 		try{
 			if (self::$softDelete){
