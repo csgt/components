@@ -11,7 +11,7 @@ class logController extends crudController {
 		Crud::setTemplate(Config::get('components::config.template','template.template'));
 		Crud::setWhere('u.rolid','<>',Cancerbero::getGodRol());
 
-		Crud::setOrderBy(array('columna'=>0,'direccion'=>'ASC'));
+		Crud::setOrderBy(array('columna'=>0,'direccion'=>'desc'));
 		
 		Crud::setCampo(array('nombre'=>'Fecha','campo'=>'logacceso.fechalogin','tipo'=>'datetime'));
 		Crud::setCampo(array('nombre'=>'Nombre','campo'=>'u.nombre','tipo'=>'string'));
