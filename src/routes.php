@@ -2,6 +2,7 @@
 	Route::group(array('before' => array('auth','cancerbero')), function() {
 		Route::resource('usuarios', 'usuariosController');
 		Route::resource('roles', 'rolesController');
+		Route::resource('logaccesos','logController');
 	});
 
 	Route::group(array('before' => array('auth','god')), function() {
