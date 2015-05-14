@@ -10,9 +10,9 @@
 	@endif
 	{{ Form::open(array('url' => URL::route('usuarios.store'), 'method' => 'POST', 'class'=>'form-horizontal', 'role'=>'form', 'id'=>'frmUsuario')) }}
 		{{Form::hidden('id', $data?$id:'') }}
-		@foreach(Config::get('login::camposeditarperfil') as $campos)
+		@foreach(Config::get('login::camposeditaradmin') as $campos)
 			<div class="form-group">
-				<label for="password" class="col-sm-2 control-label">{{ $campos['titulo'] }}</label>
+				<label for="{{ $campos['campo'] }}" class="col-sm-2 control-label">{{ $campos['titulo'] }}</label>
 				<div class="col-sm-10">
 					<?php $campo = Config::get('login::usuario.campo'); ?>
 		      <input 
@@ -28,7 +28,7 @@
     	</div>
     @endforeach
 		<div class="form-group">
-	    <label for="email" class="col-sm-2 control-label">{{ Config::get('login::usuario.titulo') }}</label>
+	    <label for="{{ Config::get('login::usuario.campo') }}" class="col-sm-2 control-label">{{ Config::get('login::usuario.titulo') }}</label>
 	    <div class="col-sm-10">
 	    	<?php $campo = Config::get('login::usuario.campo'); ?>
 	      <input 
@@ -51,13 +51,13 @@
       <label for="rolid" class="col-sm-2 control-label">Rol</label>
       <div class="col-sm-10">
       @if(Config::get('cancerbero::multiplesroles'))
-      	<select name="rolid[]" class="selectpicker" data-bv-notempty="true" multiple>
+      	<select name="rolid[]" class="selectpicker" data-width="100%" data-bv-notempty="true" multiple>
       		@foreach ($roles as $rol)
       			<option value="{{Crypt::encrypt($rol->rolid)}}" {{ (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') }}>{{$rol->nombre}}</option>
       		@endforeach
       	</select>
       @else
-				<select name="rolid" class="selectpicker">
+				<select name="rolid" class="selectpicker" data-width="100%">
 					@foreach ($roles as $rol)
 						<option value="{{Crypt::encrypt($rol->rolid)}}" {{ ($data?($data->rolid==$rol->rolid?'selected="selected"':''):'') }}>{{$rol->nombre}}</option>
 	      	@endforeach
