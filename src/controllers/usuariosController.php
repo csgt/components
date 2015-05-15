@@ -104,13 +104,13 @@ class usuariosController extends crudController {
 
 		try{
 			if (Crud::getSoftDelete()){
-				$query = DB::table(self::$tabla)
-					->where(self::$tablaId, Crypt::decrypt($aId))
+				$query = DB::table('authusuarios')
+					->where('usuarioid', Crypt::decrypt($aId))
 					->update(array('deleted_at'=>date_create(), Config::get('login::password.campo') =>''));
 			}
 			else
-				$query = DB::table(self::$tabla)
-					->where(self::$tablaId, Crypt::decrypt($aId))
+				$query = DB::table('authusuarios')
+					->where('usuarioid', Crypt::decrypt($aId))
 					->delete();
 
 			Session::flash('message', 'Registro borrado exitosamente');
