@@ -103,7 +103,7 @@ class usuariosController extends crudController {
 	public function destroy($aId) {
 
 		try{
-			if (Crud::$softDelete){
+			if (Crud::getSoftDelete()){
 				$query = DB::table(self::$tabla)
 					->where(self::$tablaId, Crypt::decrypt($aId))
 					->update(array('deleted_at'=>date_create(), Config::get('login::password.campo') =>''));
