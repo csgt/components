@@ -1,4 +1,5 @@
 <?php 
+namespace Csgt\Components;
 
 class Logacceso {
 	protected $primaryKey = 'accesoid';

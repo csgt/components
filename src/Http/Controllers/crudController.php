@@ -1,6 +1,8 @@
 <?php
+namespace Csgt\Components\Http\Controllers;
+use Illuminate\Routing\Controller, Crud;
 
-class crudController extends BaseController {
+class crudController extends Controller {
 
 	public function index() {
 		return Crud::index();

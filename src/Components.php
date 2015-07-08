@@ -1,5 +1,4 @@
 <?php 
-
 namespace Csgt\Components;
 use DB, Auth;
 
@@ -37,7 +36,7 @@ class Components {
   
 	public static function getMenuForRole() {
 		$usuarioroles = array();
-		if(Config::get('cancerbero::multiplesroles')) {
+		if(config('csgtcancerbero::multiplesroles')) {
 			$usuarioroles = DB::table('authusuarioroles')
 				->where('usuarioid', Auth::id())
 				->lists('rolid');

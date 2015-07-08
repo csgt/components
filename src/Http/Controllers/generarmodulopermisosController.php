@@ -1,6 +1,9 @@
 <?php
+namespace Csgt\Components\Http\Controllers;
 
-class generarmodulopermisosController extends BaseController {
+use Illuminate\Routing\Controller, DB, Input, Response;
+
+class generarmodulopermisosController extends Controller {
 
 	public function index() {
 		$modulos = DB::table('authmodulos')
@@ -10,7 +13,7 @@ class generarmodulopermisosController extends BaseController {
 		$mpid   = DB::table('authmodulopermisos')
 			->pluck(DB::raw('MAX(modulopermisoid)'));
 
-		return View::make('components::generarmodulopermisos')
+		return view('csgtcomponents::generarmodulopermisos')
 			->with('modulos', $modulos)
 			->with('mpid', $mpid+1);
 	}

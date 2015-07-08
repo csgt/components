@@ -1,4 +1,5 @@
 <?php
+namespace Csgt\Components\Http\Controllers;
 
 class logController extends crudController {
 

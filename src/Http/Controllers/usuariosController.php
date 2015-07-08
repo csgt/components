@@ -1,5 +1,6 @@
 <?php
-
+namespace Csgt\Components\Http\Controllers;
+use Crud, Cancerbero;
 class usuariosController extends crudController {
 
 	public function __construct() {
@@ -8,9 +9,9 @@ class usuariosController extends crudController {
 		Crud::setTitulo('Usuarios');
 		Crud::setTablaId('usuarioid');
 		Crud::setTabla('authusuarios');
-		Crud::setTemplate(Config::get('components::config.template','template.template'));
+		Crud::setTemplate(config('csgtcomponents::config.template','template.template'));
 
-		if(Config::get('components::usuariossoftdelete'))
+		if(config('csgtcomponents::usuariossoftdelete'))
 			Crud::setSoftDelete(true);
 		
 		Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
@@ -29,7 +30,6 @@ class usuariosController extends crudController {
 			Crud::setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
 	}
 
-
 	public function edit($id) {
 		$data = DB::table('authusuarios')
 			->where('usuarioid', Crypt::decrypt($id))
@@ -38,7 +38,7 @@ class usuariosController extends crudController {
 		$roles = DB::table('authroles')
 			->select('nombre','rolid')
 			->orderBy('nombre')
-			->where('rolid','<>',Config::get('cancerbero::rolbackdoor'));
+			->where('rolid','<>',config('csgtcancerbero::rolbackdoor'));
 		if ($data) {
 			$roles = $roles->orWhere('rolid', $data->rolid);
 		}
@@ -46,14 +46,14 @@ class usuariosController extends crudController {
 		$roles = $roles->get();
 
 		$usuarioroles = array();
-		if(Config::get('cancerbero::multiplesroles')) {
+		if(config('csgtcancerbero::multiplesroles')) {
 			$usuarioroles = DB::table('authusuarioroles')
 				->where('usuarioid', Auth::id())
 				->lists('rolid');
 		}
 
 		return View::make('components::usuarioEdit')
-			->with('template', Config::get('components::config.template','template.template'))
+			->with('template', config('csgtcomponents::config.template','template.template'))
 			->with('roles', $roles)
 			->with('data', $data)
 			->with('uroles', $usuarioroles)
@@ -80,7 +80,7 @@ class usuariosController extends crudController {
 			$usuario->password = Hash::make(Input::get('password'));
 		$usuario->activo = (Input::has('activo')?1:0);
 
-		if(!Config::get('cancerbero::multiplesroles')){
+		if(!config('csgtcancerbero::multiplesroles')){
 			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
 			$usuario->save();
 		}

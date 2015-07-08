@@ -1,4 +1,5 @@
 <?php
+namespace Csgt\Components\Http\Controllers;
 
 class modulosController extends crudController {
 

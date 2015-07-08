@@ -1,4 +1,6 @@
 <?php
+namespace Csgt\Components;
+
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
