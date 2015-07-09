@@ -7,7 +7,7 @@ class Components {
         array('country' => 'Guatemala', 'currency' => 'Q', 'singular' => 'QUETZAL', 'plural' => 'QUETZALES', 'symbol', 'Q'),
         array('country' => 'Estados Unidos', 'currency' => 'USD', 'singular' => 'DÓLAR', 'plural' => 'DÓLARES', 'symbol', 'US$'));
 
-  private static function convertGroup($n) {
+  private static function convertGroup($n, $aEscribirCeros=false) {
     $unidades = array('','UN ','DOS ','TRES ','CUATRO ','CINCO ','SEIS ','SIETE ','OCHO ','NUEVE ','DIEZ ',
     'ONCE ','DOCE ','TRECE ','CATORCE ','QUINCE ','DIECISEIS ','DIECISIETE ','DIECIOCHO ','DIECINUEVE ','VEINTE ');
     $decenas  = array('VENTI','TREINTA ','CUARENTA ','CINCUENTA ','SESENTA ','SETENTA ','OCHENTA ','NOVENTA ','CIEN ');
@@ -15,11 +15,24 @@ class Components {
     'SEISCIENTOS ','SETECIENTOS ','OCHOCIENTOS ','NOVECIENTOS ');
 
     $output = '';
+
+    if ($aEscribirCeros) {
+      for($d=0;$d<strlen($n);$d++) {
+        if ($n[$d]==0) 
+          $output .= 'CERO ';
+        else 
+          break;
+      }
+    }
+    $n = str_pad($n, 3, '0', STR_PAD_LEFT);
+
+
     if ($n == '100') 
       $output = "CIEN ";
-    else if ($n[0] !== '0') 
+    else if ($n[0] !== '0') {
       $output = $centenas[$n[0] - 1];   
-
+    }
+    
     $k = intval(substr($n,1));
 
     if ($k <= 20) {
@@ -33,7 +46,89 @@ class Components {
     }
     return $output;
   }
-  
+
+  public static function numeroALetras($aNumero, $aMoneda=null, $aDecimales=0, $aEscribirCeros=false) {
+    $aNumero = str_replace(',', '', $aNumero); //Quitar las comas  
+    $enteroDecimal = explode('.', $aNumero);
+    $aNumero = $enteroDecimal[0];
+
+    if ($aMoneda !== null) {
+      try {
+        $moneda = array_filter(self::$monedas, function($m) use ($aMoneda) {
+          return ($m['currency'] == $aMoneda);
+        });
+
+        $moneda = array_values($moneda);
+
+        if (count($moneda) <= 0) {
+          throw new \Exception("Tipo de moneda inválido");
+          return;
+        }
+
+        if ($aNumero < 2) {
+          $moneda = $moneda[0]['singular'];
+        } else {
+          $moneda = $moneda[0]['plural'];
+        }
+      } catch (\Exception $e) {
+        echo $e->getMessage();
+        return;
+      }
+    } else {
+      $moneda = " ";
+    }
+
+    $converted = '';
+
+    if (($aNumero < 0) || ($aNumero > 999999999)) {
+      return 'No es posible convertir el numero a letras';
+    }
+
+    $aNumeroStr     = (string) $aNumero;
+    $aNumeroStrFill = str_pad($aNumeroStr, 9, '0', STR_PAD_LEFT);
+    $millones       = substr($aNumeroStrFill, 0, 3);
+    $miles          = substr($aNumeroStrFill, 3, 3);
+    
+    if ($aEscribirCeros) 
+      $cientos = $aNumero;
+    else
+      $cientos = substr($aNumeroStrFill, 6); 
+
+    if (intval($millones) > 0) {
+      if ($millones == '001') 
+        $converted .= 'UN MILLON ';
+      else if (intval($millones) > 0) 
+        $converted .= sprintf('%sMILLONES ', self::convertGroup($millones));
+    }
+    
+    if (intval($miles) > 0) {
+      if ($miles == '001') 
+        $converted .= 'MIL ';
+      else if (intval($miles) > 0)
+        $converted .= sprintf('%sMIL ', self::convertGroup($miles));
+    }
+
+    //Cientos
+    if (intval($cientos) > 0) {
+      if (($cientos == '001')&&($aEscribirCeros==false)) 
+        $converted .= 'UN ';
+      else if (intval($cientos) > 0) 
+        $converted .= sprintf('%s ', self::convertGroup($cientos, $aEscribirCeros));
+    }
+    
+    //Decimales
+    if (count($enteroDecimal)>1) {
+      $enteroDecimal[1] = substr($enteroDecimal[1],0,$aDecimales);
+      if (intval($enteroDecimal[1])!=0) {
+        $converted .= ' PUNTO ' . self::numeroALetras($enteroDecimal[1], null, 0, true) . ' ';
+      }
+    }
+
+    $converted .= $moneda;
+    return trim($converted);
+  }
+
+ 
 	public static function getMenuForRole() {
 		$usuarioroles = array();
 		if(config('csgtcancerbero::multiplesroles')) {
@@ -71,79 +166,6 @@ class Components {
 			) ORDER BY padreid, orden';
 		return DB::select(DB::raw($query));
 	}
-
-	public static function numeroALetras($aNumero, $aMoneda=null, $aDecimales=0) {
-    $aNumero = str_replace(',', '', $aNumero); //Quitar las comas  
-    $enteroDecimal = explode('.', $aNumero);
-    $aNumero = $enteroDecimal[0];
-
-    if ($aMoneda !== null) {
-      try {
-        $moneda = array_filter(self::$monedas, function($m) use ($aMoneda) {
-        	return ($m['currency'] == $aMoneda);
-        });
-
-        $moneda = array_values($moneda);
-
-        if (count($moneda) <= 0) {
-          throw new \Exception("Tipo de moneda inválido");
-          return;
-        }
-
-        if ($aNumero < 2) {
-        	$moneda = $moneda[0]['singular'];
-        } else {
-          $moneda = $moneda[0]['plural'];
-        }
-      } catch (\Exception $e) {
-        echo $e->getMessage();
-        return;
-      }
-    } else {
-      $moneda = " ";
-    }
-
-    $converted = '';
-
-    if (($aNumero < 0) || ($aNumero > 999999999)) {
-      return 'No es posible convertir el numero a letras';
-    }
-
-		$aNumeroStr     = (string) $aNumero;
-		$aNumeroStrFill = str_pad($aNumeroStr, 9, '0', STR_PAD_LEFT);
-		$millones       = substr($aNumeroStrFill, 0, 3);
-		$miles          = substr($aNumeroStrFill, 3, 3);
-		$cientos        = substr($aNumeroStrFill, 6);
-
-    if (intval($millones) > 0) {
-      if ($millones == '001') 
-        $converted .= 'UN MILLON ';
-      else if (intval($millones) > 0) 
-        $converted .= sprintf('%sMILLONES ', self::convertGroup($millones));
-    }
-    
-    if (intval($miles) > 0) {
-      if ($miles == '001') 
-        $converted .= 'MIL ';
-      else if (intval($miles) > 0)
-        $converted .= sprintf('%sMIL ', self::convertGroup($miles));
-    }
-
-    if (intval($cientos) > 0) {
-      if ($cientos == '001') 
-        $converted .= 'UN ';
-      else if (intval($cientos) > 0) 
-        $converted .= sprintf('%s ', self::convertGroup($cientos));
-    }
-    if (count($enteroDecimal)>1) {
-      $enteroDecimal[1] = substr($enteroDecimal[1],0,$aDecimales);
-      if ($enteroDecimal[1]<>'')
-        $converted .= ' PUNTO ' . self::numeroALetras($enteroDecimal[1]) . ' ';
-    }
-
-    $converted .= $moneda;
-    return trim($converted);
-  }
 
 	public static function fechaHumanoAMysql($aFecha) {
 		
