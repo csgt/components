@@ -14,7 +14,7 @@
   "autoload": {
     "classmap": [
       "src/Http/Controllers",
-      "src/Http/Middleware",
+      "src/Http/Middleware"
     ],
     "psr-4": {
       "Csgt\\Components\\": "src"
