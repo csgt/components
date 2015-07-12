@@ -15,7 +15,6 @@
     "classmap": [
       "src/Http/Controllers",
       "src/Http/Middleware",
-      "src/Models"
     ],
     "psr-4": {
       "Csgt\\Components\\": "src"
