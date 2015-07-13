@@ -21,6 +21,10 @@ class ComponentsServiceProvider extends ServiceProvider {
     }
     $router->middleware('menu', '\Csgt\Components\Http\Middleware\MenuMW');
     $router->middleware('god', '\Csgt\Components\Http\Middleware\GodMW');
+
+    $this->publishes([
+        __DIR__ . '/../public' => public_path('packages/csgt/components'),
+    ], 'public');
 	}
 
 	public function register() {

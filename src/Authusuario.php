@@ -1,10 +1,16 @@
 <?php
 namespace Csgt\Components;
 
-use Illuminate\Auth\UserInterface;
-use Illuminate\Auth\Reminders\RemindableInterface;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
-class Authusuario extends Eloquent implements UserInterface, RemindableInterface {
+class Authusuario extends Model implements AuthenticatableContract, CanResetPasswordContract {
+	
+	use Authenticatable, CanResetPassword;
+
 	protected $table      = 'authusuarios';
 	protected $primaryKey = 'usuarioid';
 	protected $hidden     = array('password');
