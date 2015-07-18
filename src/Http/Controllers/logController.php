@@ -1,5 +1,6 @@
 <?php
 namespace Csgt\Components\Http\Controllers;
+use Crud, Cancerbero, Config;
 
 class logController extends crudController {
 
@@ -9,7 +10,7 @@ class logController extends crudController {
 		Crud::setTablaId('accesoid');
 		Crud::setTabla('logacceso');
 		Crud::setLeftJoin('authusuarios AS u','logacceso.usuarioid','=','u.usuarioid');
-		Crud::setTemplate(Config::get('components::config.template','template.template'));
+		Crud::setTemplate(config('csgtcomponents::config.template','template.template'));
 		Crud::setWhere('u.rolid','<>',Cancerbero::getGodRol());
 
 		Crud::setOrderBy(array('columna'=>0,'direccion'=>'desc'));

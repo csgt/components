@@ -1,6 +1,6 @@
 <?php
 namespace Csgt\Components\Http\Controllers;
-use Crud, Cancerbero;
+use Crud, Cancerbero, Crypt;
 class usuariosController extends crudController {
 
 	public function __construct() {
