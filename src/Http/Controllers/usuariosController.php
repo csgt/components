@@ -1,6 +1,6 @@
 <?php
 namespace Csgt\Components\Http\Controllers;
-use Crud, Cancerbero, Crypt;
+use Crud, Cancerbero, Crypt, DB, Input, Session;
 class usuariosController extends crudController {
 
 	public function __construct() {
@@ -106,7 +106,7 @@ class usuariosController extends crudController {
 			if (Crud::getSoftDelete()){
 				$query = DB::table('authusuarios')
 					->where('usuarioid', Crypt::decrypt($aId))
-					->update(array('deleted_at'=>date_create(), Config::get('login::password.campo') =>''));
+					->update(array('deleted_at'=>date_create(), config('csgtlogin::password.campo') =>''));
 			}
 			else
 				$query = DB::table('authusuarios')
