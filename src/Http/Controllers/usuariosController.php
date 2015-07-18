@@ -1,6 +1,8 @@
 <?php
 namespace Csgt\Components\Http\Controllers;
-use Crud, Cancerbero, Crypt, DB, Input, Session;
+
+use \Csgt\Components\Authusuario;
+use Crud, Cancerbero, Crypt, DB, Input, Session, Hash, Redirect;
 class usuariosController extends crudController {
 
 	public function __construct() {
@@ -9,7 +11,7 @@ class usuariosController extends crudController {
 		Crud::setTitulo('Usuarios');
 		Crud::setTablaId('usuarioid');
 		Crud::setTabla('authusuarios');
-		Crud::setTemplate(config('csgtcomponents::config.template','template.template'));
+		Crud::setTemplate(config('csgtcomponents.config.template','template.template'));
 
 		if(config('csgtcomponents::usuariossoftdelete'))
 			Crud::setSoftDelete(true);
@@ -38,7 +40,7 @@ class usuariosController extends crudController {
 		$roles = DB::table('authroles')
 			->select('nombre','rolid')
 			->orderBy('nombre')
-			->where('rolid','<>',config('csgtcancerbero::rolbackdoor'));
+			->where('rolid','<>',config('csgtcancerbero.rolbackdoor'));
 		if ($data) {
 			$roles = $roles->orWhere('rolid', $data->rolid);
 		}
@@ -46,14 +48,14 @@ class usuariosController extends crudController {
 		$roles = $roles->get();
 
 		$usuarioroles = array();
-		if(config('csgtcancerbero::multiplesroles')) {
+		if(config('csgtcancerbero.multiplesroles')) {
 			$usuarioroles = DB::table('authusuarioroles')
 				->where('usuarioid', Auth::id())
 				->lists('rolid');
 		}
 
-		return View::make('components::usuarioEdit')
-			->with('template', config('csgtcomponents::config.template','template.template'))
+		return view('csgtcomponents::usuarioEdit')
+			->with('template', config('csgtcomponents.config.template','template.template'))
 			->with('roles', $roles)
 			->with('data', $data)
 			->with('uroles', $usuarioroles)
@@ -80,7 +82,7 @@ class usuariosController extends crudController {
 			$usuario->password = Hash::make(Input::get('password'));
 		$usuario->activo = (Input::has('activo')?1:0);
 
-		if(!config('csgtcancerbero::multiplesroles')){
+		if(!config('csgtcancerbero.multiplesroles')){
 			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
 			$usuario->save();
 		}
@@ -106,7 +108,7 @@ class usuariosController extends crudController {
 			if (Crud::getSoftDelete()){
 				$query = DB::table('authusuarios')
 					->where('usuarioid', Crypt::decrypt($aId))
-					->update(array('deleted_at'=>date_create(), config('csgtlogin::password.campo') =>''));
+					->update(array('deleted_at'=>date_create(), config('csgtlogin.password.campo') =>''));
 			}
 			else
 				$query = DB::table('authusuarios')
