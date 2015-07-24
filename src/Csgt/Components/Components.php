@@ -112,7 +112,7 @@ class Components {
     //Cientos
     if (intval($cientos) > 0) {
       if (($cientos == '001')&&($aEscribirCeros==false)) 
-        $converted .= 'UN ';
+        $converted .= 'UNO ';
       else if (intval($cientos) > 0) 
         $converted .= sprintf('%s ', self::convertGroup($cientos, $aEscribirCeros));
     }
