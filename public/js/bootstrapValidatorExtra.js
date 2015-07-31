@@ -1,6 +1,6 @@
 
 (function($) {
-  $.fn.bootstrapValidator.validators.nit = {
+  $.fn.formValidation.validators.nit = {
     validate: function(validator, $field, options) {
       var value   = $field.val();
       

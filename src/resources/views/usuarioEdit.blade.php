@@ -122,7 +122,7 @@
 		$(function() {
 			$('.selectpicker').selectpicker();
 
-			$('#frmUsuario').bootstrapValidator({
+			$('#frmUsuario').formValidation({
         message: 'El campo es requerido',
         excluded: [':disabled'],
         feedbackIcons: {
