@@ -24,7 +24,7 @@
 						placeholder  = "{!! $campos['titulo'] !!}"  
 						value        = "{!! $data?$data->nombre:'' !!}" 
 						autocomplete = "off" 
-		      	data-bv-notempty>
+		      	data-fv-notempty>
 				</div>
     	</div>
     @endforeach
@@ -40,10 +40,10 @@
 					placeholder  = "{!! config('csgtlogin.usuario.titulo') !!}"  
 					value        = "{!! $data?$data->email:'' !!}" 
 					autocomplete = "off" 
-	      	data-bv-notempty = "true"
+	      	data-fv-notempty = "true"
 	      	<?php if(config('csgtlogin.usuario.tipo')=='email') { ?>
-	      	data-bv-emailAddress = "true"
-	      	data-bv-emailAddress-message = "Correo inválido"
+	      	data-fv-emailAddress = "true"
+	      	data-fv-emailAddress-message = "Correo inválido"
 					<?php } ?>
 	      	>
 	    </div>
@@ -52,7 +52,7 @@
       <label for="rolid" class="col-sm-2 control-label">Rol</label>
       <div class="col-sm-10">
       @if(config('csgtcancerbero.multiplesroles'))
-      	<select name="rolid[]" class="selectpicker" data-width="100%" data-bv-notempty="true" multiple>
+      	<select name="rolid[]" class="selectpicker" data-width="100%" data-fv-notempty="true" multiple>
       		@foreach ($roles as $rol)
       			<option value="{!!Crypt::encrypt($rol->rolid)!!}" {!! (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') !!}>{!!$rol->nombre!!}</option>
       		@endforeach
@@ -82,13 +82,13 @@
 					id                           = "password" 
 					placeholder                  = "{!! config('csgtlogin.password.titulo')!!}" 
 					autocomplete                 = "off" 
-					data-bv-identical            = "true" 
-					data-bv-identical-field      = "password2" 
-					data-bv-identical-message    = "Las passwords no concuerdan"
-					data-bv-stringlength         = "true"
-					data-bv-stringlength-min     = "6"
-					data-bv-stringlength-message = "La {!!config('csgtlogin.password.titulo')!!} debe tener al menos 6 caracteres."
-					{!!$data?'':'data-bv-notEmpty = "true"'!!}>
+					data-fv-identical            = "true" 
+					data-fv-identical-field      = "password2" 
+					data-fv-identical-message    = "Las passwords no concuerdan"
+					data-fv-stringlength         = "true"
+					data-fv-stringlength-min     = "6"
+					data-fv-stringlength-message = "La {!!config('csgtlogin.password.titulo')!!} debe tener al menos 6 caracteres."
+					{!!$data?'':'data-fv-notEmpty = "true"'!!}>
       </div>
        <div class="col-sm-5">
         <input 
@@ -97,12 +97,12 @@
 					name                         = "password2" 
 					placeholder                  = "Repetir {!! config('csgtlogin.password.titulo')!!}" 
 					autocomplete                 = "off" 
-					data-bv-identical            = "true" 
-					data-bv-identical-field      = "password" 
-					data-bv-identical-message    = "Las passwords no concuerdan"
-					data-bv-stringlength         = "true"
-					data-bv-stringlength-min     = "6"
-					data-bv-stringlength-message = "La {!!config('csgtlogin.password.titulo')!!} debe tener al menos 6 caracteres.">
+					data-fv-identical            = "true" 
+					data-fv-identical-field      = "password" 
+					data-fv-identical-message    = "Las passwords no concuerdan"
+					data-fv-stringlength         = "true"
+					data-fv-stringlength-min     = "6"
+					data-fv-stringlength-message = "La {!!config('csgtlogin.password.titulo')!!} debe tener al menos 6 caracteres.">
       </div>
     </div>
     <div class="form-group">
