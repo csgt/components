@@ -6,5 +6,5 @@
 	});
 
 	Route::group(['middleware' => ['auth','god'], 'namespace' => 'Csgt\Components\Http\Controllers'], function() {
-		Route::resource('cancerbero/modulos', 'modulosController');
+		Route::resource('cancerbero/generarmodulopermisos','generarmodulopermisosController',['only'=> ['index','store']] );
 	});
