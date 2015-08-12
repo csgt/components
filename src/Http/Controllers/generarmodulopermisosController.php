@@ -22,11 +22,11 @@ class generarmodulopermisosController extends Controller {
 		$content = '';
 		for($i=0;$i<7;$i++) {
 			$content .= "
-			DB::table('authmodulopermisos')->insert(array(
-				'modulopermisoid'	=> " . (Input::get('mpid') + $i) . ",
-				'moduloid'				=> " . Input::get('moduloid') . ",
-				'permisoid'				=> " . ($i+1) . "
-			));";
+				[
+					'modulopermisoid'	=> " . (Input::get('mpid') + $i) . ",
+					'moduloid'				=> " . Input::get('moduloid') . ",
+					'permisoid'				=> " . ($i+1) . "
+				],";
 		}
 
 		$response = Response::make($content);
