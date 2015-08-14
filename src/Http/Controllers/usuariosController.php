@@ -6,27 +6,30 @@ use Crud, Cancerbero, Crypt, DB, Input, Session, Hash, Redirect, Auth;
 class usuariosController extends crudController {
 
 	public function __construct() {
-
 		Crud::setExport(true);
 		Crud::setTitulo('Usuarios');
 		Crud::setTablaId('usuarioid');
 		Crud::setTabla('authusuarios');
 		Crud::setTemplate(config('csgtcomponents.config.template','template.template'));
 
-		if(config('csgtcomponents::usuariossoftdelete'))
+		if(config('csgtcomponents::usuariossoftdelete')) 
 			Crud::setSoftDelete(true);
-		
-		Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
 
-		Crud::setCampo(array('nombre'=>'Nombre','campo'=>'authusuarios.nombre'));
-		Crud::setCampo(array('nombre'=>'Email','campo'=>'authusuarios.email'));
-		Crud::setCampo(array('nombre'=>'Rol','campo'=>'r.nombre'));
-		Crud::setCampo(array('nombre'=>'Creado','campo'=>'authusuarios.created_at', 'tipo'=>'datetime'));
-		Crud::setCampo(array('nombre'=>'Activo','campo'=>'authusuarios.activo','tipo'=>'bool'));
+		Crud::setCampo(['nombre'=>'Nombre','campo'=>'authusuarios.nombre']);
+		Crud::setCampo(['nombre'=>'Email','campo'=>'authusuarios.email']);
+		
+		if(config('csgtcancerbero::multiplesroles')===false) {
+			Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
+			Crud::setCampo(['nombre'=>'Rol','campo'=>'r.nombre']);
+		}
+	
+		Crud::setCampo(['nombre'=>'Creado','campo'=>'authusuarios.created_at', 'tipo'=>'datetime']);
+		Crud::setCampo(['nombre'=>'Activo','campo'=>'authusuarios.activo','tipo'=>'bool']);
 
 		if(!Cancerbero::isGod()) {
 			Crud::setPermisos(Cancerbero::tienePermisosCrud('usuarios'));
-			Crud::setWhere('authusuarios.rolid', '<>', Cancerbero::getGodRol());
+			if(config('csgtcancerbero::multiplesroles')===false) 
+				Crud::setWhere('authusuarios.rolid', '<>', Cancerbero::getGodRol());
 		}
 		else
 			Crud::setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
