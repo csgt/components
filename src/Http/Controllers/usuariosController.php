@@ -18,7 +18,7 @@ class usuariosController extends crudController {
 		Crud::setCampo(['nombre'=>'Nombre','campo'=>'authusuarios.nombre']);
 		Crud::setCampo(['nombre'=>'Email','campo'=>'authusuarios.email']);
 		
-		if(config('csgtcancerbero::multiplesroles')===false) {
+		if(config('csgtcancerbero.multiplesroles')===false) {
 			Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
 			Crud::setCampo(['nombre'=>'Rol','campo'=>'r.nombre']);
 		}
@@ -28,7 +28,7 @@ class usuariosController extends crudController {
 
 		if(!Cancerbero::isGod()) {
 			Crud::setPermisos(Cancerbero::tienePermisosCrud('usuarios'));
-			if(config('csgtcancerbero::multiplesroles')===false) 
+			if(config('csgtcancerbero.multiplesroles')===false) 
 				Crud::setWhere('authusuarios.rolid', '<>', Cancerbero::getGodRol());
 		}
 		else
@@ -46,7 +46,7 @@ class usuariosController extends crudController {
 
 		$roles->where('rolid','<>',config('csgtcancerbero.rolbackdoor'));
 		
-		if(config('csgtcancerbero::multiplesroles')===false)
+		if(config('csgtcancerbero.multiplesroles')===false)
 			if ($data) {
 				$roles->orWhere('rolid', $data->rolid);
 			}
@@ -88,7 +88,7 @@ class usuariosController extends crudController {
 			$usuario->password = Hash::make(Input::get('password'));
 		$usuario->activo = (Input::has('activo')?1:0);
 
-		if(config('csgtcancerbero::multiplesroles')===false) {
+		if(config('csgtcancerbero.multiplesroles')===false) {
 			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
 			$usuario->save();
 		}
