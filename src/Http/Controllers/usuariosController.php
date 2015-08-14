@@ -2,7 +2,7 @@
 namespace Csgt\Components\Http\Controllers;
 
 use \Csgt\Components\Authusuario;
-use Crud, Cancerbero, Crypt, DB, Input, Session, Hash, Redirect;
+use Crud, Cancerbero, Crypt, DB, Input, Session, Hash, Redirect, Auth;
 class usuariosController extends crudController {
 
 	public function __construct() {
