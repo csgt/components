@@ -13,7 +13,7 @@
 		@foreach(config('csgtlogin.camposeditaradmin') as $campos)
 			<div class="form-group">
 				<label for="{!! $campos['campo'] !!}" class="col-sm-2 control-label">{!! $campos['titulo'] !!}</label>
-				<div class="col-sm-10">
+				<div class="col-sm-5">
 					<?php $campo = config('csgtlogin.usuario.campo'); ?>
 		      <input 
 						type         = "text" 
@@ -30,7 +30,7 @@
     @endforeach
 		<div class="form-group">
 	    <label for="{!! config('csgtlogin.usuario.campo') !!}" class="col-sm-2 control-label">{!! config('csgtlogin.usuario.titulo') !!}</label>
-	    <div class="col-sm-10">
+	    <div class="col-sm-5">
 	    	<?php $campo = config('csgtlogin.usuario.campo'); ?>
 	      <input 
 					type         = "text" 
@@ -50,8 +50,8 @@
 	  </div>
 	  <div class="form-group">
       <label for="rolid" class="col-sm-2 control-label">Rol</label>
-      <div class="col-sm-10">
-      @if(config('csgtcancerbero.multiplesroles'))
+      <div class="col-sm-5">
+      @if(config('csgtcancerbero.multiplesroles')===true)
       	<select name="rolid[]" class="selectpicker" data-width="100%" data-fv-notempty="true" multiple>
       		@foreach ($roles as $rol)
       			<option value="{!!Crypt::encrypt($rol->rolid)!!}" {!! (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') !!}>{!!$rol->nombre!!}</option>

@@ -42,18 +42,21 @@ class usuariosController extends crudController {
 
 		$roles = DB::table('authroles')
 			->select('nombre','rolid')
-			->orderBy('nombre')
-			->where('rolid','<>',config('csgtcancerbero.rolbackdoor'));
-		if ($data) {
-			$roles = $roles->orWhere('rolid', $data->rolid);
-		}
+			->orderBy('nombre');
+
+		$roles->where('rolid','<>',config('csgtcancerbero.rolbackdoor'));
+		
+		if(config('csgtcancerbero::multiplesroles')===false)
+			if ($data) {
+				$roles->orWhere('rolid', $data->rolid);
+			}
 
 		$roles = $roles->get();
 
-		$usuarioroles = array();
-		if(config('csgtcancerbero.multiplesroles')) {
-			$usuarioroles = DB::table('authusuarioroles')
-				->where('usuarioid', Auth::id())
+		$uroles = array();
+		if(config('csgtcancerbero.multiplesroles')===true) {
+			$uroles = DB::table('authusuarioroles')
+				->where('usuarioid', Crypt::decrypt($id))
 				->lists('rolid');
 		}
 
@@ -61,7 +64,7 @@ class usuariosController extends crudController {
 			->with('template', config('csgtcomponents.config.template','template.template'))
 			->with('roles', $roles)
 			->with('data', $data)
-			->with('uroles', $usuarioroles)
+			->with('uroles', $uroles)
 			->with('id', $id);
 	}
 
@@ -85,20 +88,21 @@ class usuariosController extends crudController {
 			$usuario->password = Hash::make(Input::get('password'));
 		$usuario->activo = (Input::has('activo')?1:0);
 
-		if(!config('csgtcancerbero.multiplesroles')){
+		if(config('csgtcancerbero::multiplesroles')===false) {
 			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
 			$usuario->save();
 		}
-
 		else{
-			$roles = Input::get('rolid');
-
-			$usuario->rolid  = Crypt::decrypt($roles[0]);
 			$usuario->save();
-
+			$roles = Input::get('rolid');
 			foreach($roles as $rol) {
-				DB::table('authusuarioroles')
-					->insert(array('rolid'=>Crypt::decrypt($rol),'usuarioid'=>$usuario->usuarioid));
+				DB::table('authusuarioroles')->insert(
+					[
+						'rolid'      => Crypt::decrypt($rol),
+						'usuarioid'  => $usuario->usuarioid,
+						'created_at' => date_create(),
+						'updated_at' => date_create()
+					]);
 			}
 		}		
 		
