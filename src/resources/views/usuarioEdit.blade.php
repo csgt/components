@@ -1,6 +1,7 @@
 @extends($template)
 
 @section('content')
+
 	<h3 class="text-primary">{!!$data?'Editar':'Nuevo'!!} Usuario</h3>
 	@if(Session::get('message'))
 		<div class="alert alert-{!! Session::get('type') !!} alert-dismissable .mrgn-top">
@@ -50,21 +51,24 @@
 	  </div>
 	  <div class="form-group">
       <label for="rolid" class="col-sm-2 control-label">Rol</label>
-      <div class="col-sm-5">
+      
       @if(config('csgtcancerbero.multiplesroles')===true)
-      	<select name="rolid[]" class="selectpicker" data-width="100%" data-fv-notempty="true" multiple>
-      		@foreach ($roles as $rol)
-      			<option value="{!!Crypt::encrypt($rol->rolid)!!}" {!! (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') !!}>{!!$rol->nombre!!}</option>
-      		@endforeach
-      	</select>
+      	<div class="col-sm-10">
+	      	<select name="rolid[]" class="selectpicker" multiple autocomplete="off">
+	      		@foreach ($roles as $rol)
+	      			<option value="{{Crypt::encrypt($rol->rolid)}}" {!! (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') !!}>{{$rol->nombre}}</option>
+	      		@endforeach
+	      	</select>
+	      </div>
       @else
-				<select name="rolid" class="selectpicker" data-width="100%">
-					@foreach ($roles as $rol)
-						<option value="{!!Crypt::encrypt($rol->rolid)!!}" {!! ($data?($data->rolid==$rol->rolid?'selected="selected"':''):'') !!}>{!!$rol->nombre!!}</option>
-	      	@endforeach
-      	</select>
+      	<div class="col-sm-5">
+					<select name="rolid" class="selectpicker" data-width="100%">
+						@foreach ($roles as $rol)
+							<option value="{!!Crypt::encrypt($rol->rolid)!!}" {!! ($data?($data->rolid==$rol->rolid?'selected="selected"':''):'') !!}>{{$rol->nombre}}</option>
+		      	@endforeach
+	      	</select>
+	      </div>
       @endif
-      </div>
     </div>
 	  <div class="form-group">
 	    <div class="col-sm-2">&nbsp;</div>
@@ -80,6 +84,7 @@
 					class                        = "form-control" 
 					name                         = "password" 
 					id                           = "password" 
+					autocomplete								 = "off"
 					placeholder                  = "{!! config('csgtlogin.password.titulo')!!}" 
 					autocomplete                 = "off" 
 					data-fv-identical            = "true" 
@@ -95,6 +100,7 @@
 					type                         = "password" 
 					class                        = "form-control" 
 					name                         = "password2" 
+					autocomplete								 = "off"
 					placeholder                  = "Repetir {!! config('csgtlogin.password.titulo')!!}" 
 					autocomplete                 = "off" 
 					data-fv-identical            = "true" 
@@ -120,7 +126,7 @@
 	{!! Form::close() !!}
 	<script type="text/javascript">
 		$(function() {
-			$('.selectpicker').selectpicker();
+			$('.selectpicker').selectize();
 
 			$('#frmUsuario').formValidation({
         message: 'El campo es requerido',

@@ -61,6 +61,7 @@ class usuariosController extends crudController {
 		}
 
 		return view('csgtcomponents::usuarioEdit')
+			->with('templateincludes',['selectize','formvalidation'])
 			->with('template', config('csgtcomponents.config.template','template.template'))
 			->with('roles', $roles)
 			->with('data', $data)
@@ -82,7 +83,7 @@ class usuariosController extends crudController {
 			$usuario = Authusuario::find(Crypt::decrypt($id));
 
 		$usuario->nombre = Input::get('nombre');
-		$usuario->email = Input::get('email');
+		$usuario->email  = Input::get('email');
 
 		if ($pass<>'')
 			$usuario->password = Hash::make(Input::get('password'));
@@ -95,6 +96,9 @@ class usuariosController extends crudController {
 		else{
 			$usuario->save();
 			$roles = Input::get('rolid');
+			//Borramos todos los roles actuales
+			DB::table('authusuarioroles')->where('usuarioid', $usuario->usuarioid)->delete();
+
 			foreach($roles as $rol) {
 				DB::table('authusuarioroles')->insert(
 					[
