@@ -8,7 +8,7 @@ class GodMW {
     $cancerbero = new Cancerbero;
 
 		if(!$cancerbero->isGod()) 
-			return view('cancerbero::error')->with('mensaje', $result->error . ' (' . Route::currentRouteName() . ')');
+			return view('csgtcancerbero::error')->with('mensaje', $request->error . ' (' . Route::currentRouteName() . ')');
 		return $next($request);
 	}
 }
