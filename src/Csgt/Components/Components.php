@@ -200,12 +200,12 @@ class Components {
 
   public static function getTipoCambio() {
     try {
-      $soapClient = new SoapClient("http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?wsdl",["trace" => 1]);
+      $soapClient = new \SoapClient("http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?wsdl",["trace" => 1]);
       $info = $soapClient->__call("TipoCambioDia",[]);
-      echo $info->TipoCambioDiaResult->CambioDolar->VarDolar->referencia;
+      return $info->TipoCambioDiaResult->CambioDolar->VarDolar->referencia;
     } 
     catch (Exception $e) {
-      echo('0');
+      return 0;
     }
   }
 
