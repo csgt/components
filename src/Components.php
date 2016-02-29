@@ -196,4 +196,15 @@ class Components {
 
 		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ((sizeof($fh)==2)?' ' . $fh[1]:'');
 	}
+
+  public static function getTipoCambio() {
+    try {
+      $soapClient = new SoapClient("http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?wsdl",["trace" => 1]);
+      $info = $soapClient->__call("TipoCambioDia",[]);
+      echo $info->TipoCambioDiaResult->CambioDolar->VarDolar->referencia;
+    } 
+    catch (Exception $e) {
+      echo('0');
+    }
+  }
 }
