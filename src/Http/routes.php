@@ -1,10 +1,22 @@
 <?php
-	Route::group(['middeleware' => ['auth','cancerbero'], 'namespace' => 'Csgt\Components\Http\Controllers'], function() {
+	$routedata = ['namespace' => 'Csgt\Components\Http\Controllers', 'middleware'=>['auth','cancerbero']];
+	if(config('csgtlogin.routeextras')) {
+		$routedata = array_merge($routedata, config('csgtlogin.routeextras',[]));
+	}
+
+	$routedatagod = ['namespace' => 'Csgt\Components\Http\Controllers', 'middleware'=>['auth','god']];
+	if(config('csgtlogin.routeextras')) {
+		$routedatagod = array_merge($routedata, config('csgtlogin.routeextras',[]));
+	}
+
+
+
+	Route::group($routedata, function() {
 		Route::resource('usuarios', 'usuariosController');
 		Route::resource('roles', 'rolesController');
 		Route::resource('logaccesos','logController');
 	});
 
-	Route::group(['middleware' => ['auth','god'], 'namespace' => 'Csgt\Components\Http\Controllers'], function() {
+	Route::group($routedatagod, function() {
 		Route::resource('cancerbero/generarmodulopermisos','generarmodulopermisosController',['only'=> ['index','store']] );
 	});
