@@ -89,6 +89,14 @@ class usuariosController extends crudController {
 			$usuario->password = Hash::make(Input::get('password'));
 		$usuario->activo = (Input::has('activo')?1:0);
 
+		//Ahora validamos si la password debe ser cambiada
+		if (config('csgtlogin.vencimiento.habilitado')) {
+			if(Input::has('vencimiento')) {
+				$usuario->{config('csgtlogin.vencimiento.campo')} = date_create();
+			}
+		}
+
+
 		if(config('csgtcancerbero.multiplesroles')===false) {
 			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
 			$usuario->save();

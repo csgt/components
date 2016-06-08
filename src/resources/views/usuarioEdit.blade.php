@@ -76,6 +76,14 @@
 	    	{!!Form::checkbox('activo',1, ($data?($data->activo?true:false):true) )!!} <label for="activo">Activo</label>
 	    </div>
 	  </div>
+	  @if(config('csgtlogin.vencimiento.habilitado'))
+	  <div class="form-group">
+	    <div class="col-sm-2">&nbsp;</div>
+	    <div class="col-sm-10">
+	    	{!!Form::checkbox('vencimiento',1, true)!!} <label for="vencimiento">Usuario debe cambiar la contraseña</label>
+	    </div>
+	  </div>
+	  @endif
     <div class="form-group">
       <label for="password" class="col-sm-2 control-label">{!! config('csgtlogin.password.titulo') !!}</label>
       <div class="col-sm-5">
@@ -111,12 +119,14 @@
 					data-fv-stringlength-message = "La {!!config('csgtlogin.password.titulo')!!} debe tener al menos 6 caracteres.">
       </div>
     </div>
+    @if($data)
     <div class="form-group">
 	  	<div class="col-sm-2">&nbsp;</div>
 	    <div class="col-sm-10">
 	    	<small>* Dejar en blanco para no cambiar {!! config('csgtlogin.password.titulo') !!}.</small>
 	   	</div>
 	  </div>
+	  @endif
     <div class="form-group">
 	    <div class="col-sm-2">&nbsp;</div>
 	    <div class="col-sm-10">
@@ -130,6 +140,7 @@
 
 			$('#frmUsuario').formValidation({
         message: 'El campo es requerido',
+        live: 'submitted',
         excluded: [':disabled'],
         feedbackIcons: {
           valid: 'glyphicon glyphicon-ok',
