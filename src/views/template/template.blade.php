@@ -6,7 +6,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
 	<meta name="author" content="">
-	<link rel="shortcut icon" href="../../assets/ico/favicon.ico">
 	
 	<title>CORE DEV</title>
 
@@ -16,7 +15,6 @@
 	{{ HTML::style('css/bootstrap-select.css'); }}
 	{{ HTML::style('css/dataTables.bootstrap.css'); }}
 	{{ HTML::style('css/core.css'); }}
-  {{ HTML::style('css/maqxsa.css'); }}
   {{ HTML::style('css/bootstrapValidator.min.css'); }}
 
 	{{ HTML::script('js/jquery.min.js') }}
@@ -27,7 +25,6 @@
 	{{ HTML::script('js/jquery.dataTables.min.js') }}
 	{{ HTML::script('js/dataTables.bootstrap.js'); }}
   {{ HTML::script('js/bootstrapValidator.min.js'); }}
-  {{ HTML::script('packages/csgt/components/js/menene.min.js'); }}
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
