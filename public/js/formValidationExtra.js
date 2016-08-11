@@ -1,11 +1,11 @@
 
 (function($) {
-  $.fn.formValidation.validators.nit = {
+  FormValidation.Validator.nit = {
     validate: function(validator, $field, options) {
       var value   = $field.val();
       
-      if (value === '') return true;
-      
+      if (value === '')   return true;
+      if (value === 'CF') return true;
 
       var nitRegExp = /\d+(-)([0-9K])/i; ;
       
