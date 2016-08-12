@@ -30,7 +30,7 @@
     	</div>
     @endforeach
 		<div class="form-group">
-	    <label for="{!! config('csgtlogin.usuario.campo') !!}" class="col-sm-2 control-label">{!! config('csgtlogin.usuario.titulo') !!}</label>
+	    <label for="{!! config('csgtlogin.usuario.campo') !!}" class="col-sm-2 control-label">{!! trans('csgtlogin::login.usuario') !!}</label>
 	    <div class="col-sm-5">
 	    	<?php $campo = config('csgtlogin.usuario.campo'); ?>
 	      <input 
@@ -38,7 +38,7 @@
 					class        = "form-control" 
 					id           = "{!! config('csgtlogin.usuario.campo') !!}" 
 					name         = "{!! config('csgtlogin.usuario.campo') !!}" 
-					placeholder  = "{!! config('csgtlogin.usuario.titulo') !!}"  
+					placeholder  = "{!! trans('csgtlogin::login.usuario') !!}"  
 					value        = "{!! $data?$data->email:'' !!}" 
 					autocomplete = "off" 
 	      	data-fv-notempty = "true"
@@ -85,7 +85,7 @@
 	  </div>
 	  @endif
     <div class="form-group">
-      <label for="password" class="col-sm-2 control-label">{!! config('csgtlogin.password.titulo') !!}</label>
+      <label for="password" class="col-sm-2 control-label">{!! trans('csgtlogin::login.contrasena') !!}</label>
       <div class="col-sm-5">
         <input 
 					type                         = "password" 
@@ -93,7 +93,7 @@
 					name                         = "password" 
 					id                           = "password" 
 					autocomplete								 = "off"
-					placeholder                  = "{!! config('csgtlogin.password.titulo')!!}" 
+					placeholder                  = "{!! trans('csgtlogin::login.contrasena') !!}" 
 					autocomplete                 = "off" 
 					data-fv-identical            = "true" 
 					data-fv-identical-field      = "password2" 
@@ -109,7 +109,7 @@
 					class                        = "form-control" 
 					name                         = "password2" 
 					autocomplete								 = "off"
-					placeholder                  = "Repetir {!! config('csgtlogin.password.titulo')!!}" 
+					placeholder                  = "{!! trans('csgtlogin::login.repetir') . ' ' . trans('csgtlogin::login.contrasena') !!}" 
 					autocomplete                 = "off" 
 					data-fv-identical            = "true" 
 					data-fv-identical-field      = "password" 
