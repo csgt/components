@@ -18,18 +18,11 @@ class usuariosController extends crudController {
 		Crud::setCampo(['nombre'=>'Nombre','campo'=>'authusuarios.nombre']);
 		Crud::setCampo(['nombre'=>'Email','campo'=>'authusuarios.email']);
 		
-		if(config('csgtcancerbero.multiplesroles')===false) {
-			Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
-			Crud::setCampo(['nombre'=>'Rol','campo'=>'r.nombre']);
-		}
-	
 		Crud::setCampo(['nombre'=>'Creado','campo'=>'authusuarios.created_at', 'tipo'=>'datetime']);
 		Crud::setCampo(['nombre'=>'Activo','campo'=>'authusuarios.activo','tipo'=>'bool']);
 
 		if(!Cancerbero::isGod()) {
 			Crud::setPermisos(Cancerbero::tienePermisosCrud('usuarios'));
-			if(config('csgtcancerbero.multiplesroles')===false) 
-				Crud::setWhere('authusuarios.rolid', '<>', Cancerbero::getGodRol());
 		}
 		else
 			Crud::setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
@@ -46,19 +39,12 @@ class usuariosController extends crudController {
 
 		$roles->where('rolid','<>',config('csgtcancerbero.rolbackdoor'));
 		
-		if(config('csgtcancerbero.multiplesroles')===false)
-			if ($data) {
-				$roles->orWhere('rolid', $data->rolid);
-			}
-
 		$roles = $roles->get();
 
-		$uroles = array();
-		if(config('csgtcancerbero.multiplesroles')===true) {
-			$uroles = DB::table('authusuarioroles')
-				->where('usuarioid', Crypt::decrypt($id))
-				->lists('rolid');
-		}
+		$uroles = DB::table('authusuarioroles')
+			->where('usuarioid', Crypt::decrypt($id))
+			->lists('rolid');
+		
 
 		return view('csgtcomponents::usuarioEdit')
 			->with('templateincludes',['selectize','formvalidation'])
@@ -97,26 +83,22 @@ class usuariosController extends crudController {
 		}
 
 
-		if(config('csgtcancerbero.multiplesroles')===false) {
-			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
-			$usuario->save();
-		}
-		else{
-			$usuario->save();
-			$roles = Input::get('rolid');
-			//Borramos todos los roles actuales
-			DB::table('authusuarioroles')->where('usuarioid', $usuario->usuarioid)->delete();
 
-			foreach($roles as $rol) {
-				DB::table('authusuarioroles')->insert(
-					[
-						'rolid'      => Crypt::decrypt($rol),
-						'usuarioid'  => $usuario->usuarioid,
-						'created_at' => date_create(),
-						'updated_at' => date_create()
-					]);
-			}
-		}		
+		$usuario->save();
+		$roles = Input::get('rolid');
+		//Borramos todos los roles actuales
+		DB::table('authusuarioroles')->where('usuarioid', $usuario->usuarioid)->delete();
+
+		foreach($roles as $rol) {
+			DB::table('authusuarioroles')->insert(
+				[
+					'rolid'      => Crypt::decrypt($rol),
+					'usuarioid'  => $usuario->usuarioid,
+					'created_at' => date_create(),
+					'updated_at' => date_create()
+				]);
+		}
+			
 		
 		return Redirect::route('usuarios.index');
 	}

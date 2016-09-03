@@ -130,15 +130,10 @@ class Components {
 
  
 	public static function getMenuForRole() {
-		$usuarioroles = array();
-		if(config('csgtcancerbero.multiplesroles')) {
-			$usuarioroles = DB::table('authusuarioroles')
-				->where('usuarioid', Auth::id())
-				->lists('rolid');
-		}
 
-		else
-			$usuarioroles[] = Auth::user()->rolid;
+		$usuarioroles = DB::table('authusuarioroles')
+			->where('usuarioid', Auth::id())
+			->lists('rolid');
 
 		$query = 'SELECT * FROM authmenu WHERE ruta IN (
 			SELECT 

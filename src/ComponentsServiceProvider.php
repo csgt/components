@@ -32,6 +32,10 @@ class ComponentsServiceProvider extends ServiceProvider {
 	}
 
 	public function register() {
+		$this->commands([
+      Console\MakeComponentsCommand::class
+    ]);
+
 		$this->app['components'] = $this->app->share(function($app) {
     	return new Components;
   	});

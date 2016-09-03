@@ -52,23 +52,13 @@
 	  <div class="form-group">
       <label for="rolid" class="col-sm-2 control-label">Rol</label>
       
-      @if(config('csgtcancerbero.multiplesroles')===true)
-      	<div class="col-sm-10">
-	      	<select name="rolid[]" class="selectpicker" multiple autocomplete="off">
-	      		@foreach ($roles as $rol)
-	      			<option value="{{Crypt::encrypt($rol->rolid)}}" {!! (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') !!}>{{$rol->nombre}}</option>
-	      		@endforeach
-	      	</select>
-	      </div>
-      @else
-      	<div class="col-sm-5">
-					<select name="rolid" class="selectpicker" data-width="100%">
-						@foreach ($roles as $rol)
-							<option value="{!!Crypt::encrypt($rol->rolid)!!}" {!! ($data?($data->rolid==$rol->rolid?'selected="selected"':''):'') !!}>{{$rol->nombre}}</option>
-		      	@endforeach
-	      	</select>
-	      </div>
-      @endif
+    	<div class="col-sm-10">
+      	<select name="rolid[]" class="selectpicker" multiple autocomplete="off">
+      		@foreach ($roles as $rol)
+      			<option value="{{Crypt::encrypt($rol->rolid)}}" {!! (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') !!}>{{$rol->nombre}}</option>
+      		@endforeach
+      	</select>
+      </div>
     </div>
 	  <div class="form-group">
 	    <div class="col-sm-2">&nbsp;</div>

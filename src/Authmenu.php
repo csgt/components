@@ -2,6 +2,8 @@
 namespace Csgt\Components;
 
 use Auth, DB;
+use App\Models\Menu\Authmenu;
+
 class Authmenu {
 	protected $padres  = array();
 	protected $menuIds = array(0);
@@ -14,22 +16,14 @@ class Authmenu {
 	}
 
 	function getMenuForRole() {
-		$usuarioroles = array();
-		if(config('csgtcancerbero.multiplesroles')) {
-			$usuarioroles = DB::table('authusuarioroles')
-				->where('usuarioid', Auth::id())
-				->lists('rolid');
-		}
 
-		else
-			$usuarioroles[] = Auth::user()->rolid;
+		$usuarioroles = Auth::user()->getRoles();
+
+		$menus = Authmenu::select('padreid','menuid')->get();
 
 		//Guardamos un array de padres para solo abrir el dataset una vez
-		$menus = DB::table('authmenu AS m')
-			->select('menuid','padreid')
-			->get();
 		foreach ($menus as $menu) {
-			$this->padres[$menu->menuid] = (int)$menu->padreid;
+		 	$this->padres[$menu->menuid] = (int)$menu->padreid;
 		}
 
 		//Buscamos todos los permisos (sin padres) y agregamos los padres
@@ -50,7 +44,7 @@ class Authmenu {
 		}
 
 		//Ahora que ya tenemos todos los menuids que necesitamos, hacemos de nuevo el select IN
-		$arr = array();
+		$arr = [];
 		$permisos = DB::table('authmenu AS m')
 			->leftJoin('authmodulopermisos AS mp', 'mp.modulopermisoid','=','m.modulopermisoid')
 			->leftJoin('authmodulos AS mo','mo.moduloid','=','mp.moduloid')
@@ -70,7 +64,7 @@ class Authmenu {
 			$arr[$i]['menuid']  = (int)$menu->menuid;
 			$i++;
 		}
-		return $arr;
+		return collect($arr);
 	}
 
 }
