@@ -1,7 +1,7 @@
 <?php 
 namespace Csgt\Components;
 
-use Auth, DB;
+use Auth, DB, Session;
 use App\Models\Menu\Authmenu;
 
 class Authmenu {
@@ -64,7 +64,7 @@ class Authmenu {
 			$arr[$i]['menuid']  = (int)$menu->menuid;
 			$i++;
 		}
-		return collect($arr);
+		Session::put('menu-collection', collect($arr));
 	}
 
 }

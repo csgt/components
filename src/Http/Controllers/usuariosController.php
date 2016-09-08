@@ -2,15 +2,15 @@
 namespace Csgt\Components\Http\Controllers;
 
 use \Csgt\Components\Authusuario;
-use Crud, Cancerbero, Crypt, DB, Input, Session, Hash, Redirect, Auth;
+use Cancerbero, Crypt, DB, Input, Session, Hash, Redirect, Auth;
 class usuariosController extends crudController {
-
+/*
 	public function __construct() {
 		Crud::setExport(true);
 		Crud::setTitulo('Usuarios');
 		Crud::setTablaId('usuarioid');
 		Crud::setTabla('authusuarios');
-		Crud::setTemplate(config('csgtcomponents.config.template','template.template'));
+		Crud::setTemplate(config('csgtcomponents.template','layouts.app'));
 
 		if(config('csgtcomponents::usuariossoftdelete')) 
 			Crud::setSoftDelete(true);
@@ -43,12 +43,13 @@ class usuariosController extends crudController {
 
 		$uroles = DB::table('authusuarioroles')
 			->where('usuarioid', Crypt::decrypt($id))
-			->lists('rolid');
+			->pluck('rolid')
+			->toArray();
 		
 
 		return view('csgtcomponents::usuarioEdit')
 			->with('templateincludes',['selectize','formvalidation'])
-			->with('template', config('csgtcomponents.config.template','template.template'))
+			->with('template', config('csgtcomponents.template','layouts.app'))
 			->with('roles', $roles)
 			->with('data', $data)
 			->with('uroles', $uroles)
@@ -126,5 +127,5 @@ class usuariosController extends crudController {
 
 		return Redirect::to('/usuarios');
 	}
-
+*/
 }

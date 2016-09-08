@@ -5,12 +5,15 @@ use Closure, Csgt\Components\Authmenu, Menu, Cancerbero, Session;
 
 class MenuMW {
 	public function handle($request, Closure $next) {
-	  if(!Session::has('menu')){
-			$elMenu     = new Menu;
+	  if(!Session::has('menu-collection')){
+			
 			$elAuthMenu = new Authmenu;
-			$menuItems  = $elAuthMenu->getMenuForRole();
-			Session::put('menu', $elMenu->generarMenu($menuItems));
+			$elAuthMenu->getMenuForRole();
 		}	
+		$elMenu = new Menu;
+		$menuCollection = Session::get('menu-collection');
+		//$selected = Session::
+		Session::put('menu', $elMenu->generarMenu($menuCollection));
 		return $next($request);
 	}
 }

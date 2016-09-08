@@ -1,15 +1,15 @@
 <?php
 namespace Csgt\Components\Http\Controllers;
-use Crud, Cancerbero;
+use Cancerbero;
 
 class rolesController extends crudController {
-
+/*
 	public function __construct() {
 		Crud::setExport(true);
 		Crud::setTitulo('Roles');
 		Crud::setTablaId('rolid');
 		Crud::setTabla('authroles');
-		Crud::setTemplate(config('csgtcomponents::config.template','template.template'));
+		Crud::setTemplate(config('csgtcomponents.template','layouts.app'));
 		
 		Crud::setCampo(array('nombre'=>'Nombre','campo'=>'nombre','tipo'=>'string'));
 		Crud::setCampo(array('nombre'=>'Descripci&oacute;n','campo'=>'descripcion','tipo'=>'string'));
@@ -23,4 +23,5 @@ class rolesController extends crudController {
 			
 		Crud::setBotonExtra(array('url'=>'cancerbero/asignar/{id}', 'class'=>'warning', 'icon'=>'glyphicon glyphicon-lock', 'titulo'=>'Asignar Permisos'));
 	}
+	*/
 }

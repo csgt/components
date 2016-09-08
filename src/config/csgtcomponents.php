@@ -1,6 +1,6 @@
 <?php
 return array(
-	'template'           => 'template.template',
+	'template'           => 'layouts.app',
 	'usuariossoftdelete' => false,
 		/*
 	|--------------------------------------------------------------------------
