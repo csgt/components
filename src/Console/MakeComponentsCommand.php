@@ -16,6 +16,9 @@ class MakeComponentsCommand extends Command {
     'layout/menu.stub' => 'layouts/menu.blade.php',
   ];
 
+  protected $controllers = [
+    'RolesController'
+  ];
 
   protected $models = [
     'Authmenu' => 'Menu',
@@ -23,9 +26,25 @@ class MakeComponentsCommand extends Command {
 
   public function fire() {
     $this->createDirectories();
-    //$this->exportViews(); 
+    $this->exportControllers(); 
     $this->exportModels();
+
+    file_put_contents(
+      base_path('routes/web.php'),
+      file_get_contents(__DIR__.'/stubs/make/routes.stub'),
+      FILE_APPEND
+    );
+
     $this->info('Vistas & Controladores para Components generadas correctamente.');
+  }
+
+  protected function exportControllers() {
+    foreach ($this->controllers as $controller) {
+      file_put_contents(
+        app_path('Http/Controllers/'.$controller . '.php'),
+        $this->compileControllerStub($controller)
+      );
+    }
   }
 
   protected function exportViews() {
@@ -36,6 +55,7 @@ class MakeComponentsCommand extends Command {
       );
     }
   }
+
 
   protected function exportModels() {
     foreach ($this->models as $modelName => $folder) {
@@ -50,6 +70,14 @@ class MakeComponentsCommand extends Command {
     if (! is_dir(app_path('Models/Menu'))) {
       mkdir(app_path('Models/Menu'), 0755, true);
     }
+  }
+
+  protected function compileControllerStub($aPath, $aExtension = "stub") {
+    return str_replace(
+      '{{namespace}}',
+      $this->getAppNamespace(),
+      file_get_contents(__DIR__.'/stubs/make/controllers/' . $aPath . '.' . $aExtension)
+    );
   }
 
   protected function compileModelStub($aModel, $aExtension = "stub") {

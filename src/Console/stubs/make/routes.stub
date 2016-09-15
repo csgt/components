@@ -1,0 +1,2 @@
+//=== CSGTCOMPONENTS
+Route::resource('roles','RolesController');	

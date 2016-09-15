@@ -1,0 +1,26 @@
+<?php namespace {{namespace}}Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use {{namespace}}Http\Requests;
+use Csgt\Crud\CrudController;
+use Cancerbero;
+
+class RolesController extends CrudController {
+	public function __construct(){
+		$this->setModelo(new \{{namespace}}Models\Cancerbero\Authrol);
+		$this->setTitulo('Roles');
+
+		$this->setCampo(['nombre' =>'Nombre', 'campo' => 'nombre']);
+		$this->setCampo(['nombre' =>'Descripción', 'campo' => 'descripcion']);
+
+		if(!Cancerbero::isGod()) {
+			$this->setPermisos(Cancerbero::tienePermisosCrud('roles'));
+			$this->setWhere('rolid', '<>', Cancerbero::getGodRol());
+		}
+		else
+			$this->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
+
+		
+	}
+}
