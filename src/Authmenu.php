@@ -2,7 +2,7 @@
 namespace Csgt\Components;
 
 use Auth, DB, Session;
-use App\Models\Menu\Authmenu;
+use App\Models\Menu\Authmenu as Menu;
 
 class Authmenu {
 	protected $padres  = array();
@@ -19,7 +19,7 @@ class Authmenu {
 
 		$usuarioroles = Auth::user()->getRoles();
 
-		$menus = Authmenu::select('padreid','menuid')->get();
+		$menus = Menu::select('padreid','menuid')->get();
 
 		//Guardamos un array de padres para solo abrir el dataset una vez
 		foreach ($menus as $menu) {
