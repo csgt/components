@@ -13,7 +13,7 @@ class MakeComponentsCommand extends Command {
   protected $description = 'Vista components';
 
   protected $views = [
-    'layout/menu.stub' => 'layouts/menu.blade.php',
+    'roles/edit.stub' => 'roles/edit.blade.php',
   ];
 
   protected $controllers = [
@@ -28,6 +28,7 @@ class MakeComponentsCommand extends Command {
     $this->createDirectories();
     $this->exportControllers(); 
     $this->exportModels();
+    $this->exportViews();
 
     file_put_contents(
       base_path('routes/web.php'),
@@ -67,6 +68,11 @@ class MakeComponentsCommand extends Command {
   }
 
   protected function createDirectories() {
+
+    if (! is_dir(resource_path('views/roles'))) {
+      mkdir(resource_path('views/roles'), 0755, true);
+    }
+
     if (! is_dir(app_path('Models/Menu'))) {
       mkdir(app_path('Models/Menu'), 0755, true);
     }

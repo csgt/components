@@ -4,11 +4,13 @@ use Illuminate\Http\Request;
 
 use {{namespace}}Http\Requests;
 use Csgt\Crud\CrudController;
-use Cancerbero;
+use Cancerbero, Crypt, DB, Exception;
+use {{namespace}}Models\Cancerbero\Authrol;
+use {{namespace}}Models\Cancerbero\Authrolmodulopermiso;
 
 class RolesController extends CrudController {
 	public function __construct(){
-		$this->setModelo(new \{{namespace}}Models\Cancerbero\Authrol);
+		$this->setModelo(new Authrol);
 		$this->setTitulo('Roles');
 
 		$this->setCampo(['nombre' =>'Nombre', 'campo' => 'nombre']);
@@ -20,7 +22,97 @@ class RolesController extends CrudController {
 		}
 		else
 			$this->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
+	}
 
-		
+	public function edit(Request $request, $id) {
+		try {
+			$id = Crypt::decrypt($id);
+		} 
+		catch (Exception $e) {
+			session()->set('mensajeError', 'ID inválido');
+			return redirect()->to('/cancerbero/error');
+		}
+
+		$modulopermisosarray = [];
+		$modulopermisos = DB::table(config('csgtcancerbero.modulopermisos.tabla').' AS modulopermisos')
+			->select(config('csgtcancerbero.modulopermisos.id'),
+				'modulos.'.config('csgtcancerbero.modulos.id'),
+				'modulos.'.config('csgtcancerbero.modulos.nombrefriendly') . ' AS modulo',
+				'modulos.'.config('csgtcancerbero.modulos.nombre') . ' AS ruta',
+				'permisos.'.config('csgtcancerbero.permisos.nombrefriendly') . ' AS permisodesc',
+				'permisos.'.config('csgtcancerbero.permisos.nombre') . ' AS permiso'
+				)
+			->leftJoin(config('csgtcancerbero.modulos.tabla').' AS modulos', 'modulopermisos.'.config('csgtcancerbero.modulopermisos.moduloid'), '=', 'modulos.'.config('csgtcancerbero.modulos.id'))
+			->leftJoin(config('csgtcancerbero.permisos.tabla').' AS permisos', 'modulopermisos.'.config('csgtcancerbero.modulopermisos.permisoid'), '=', 'permisos.'.config('csgtcancerbero.permisos.id'))
+			->orderBy('modulo')
+			->orderBy('permiso')
+			->get();
+
+		$moduloatual = '';
+		$i = 0;
+		foreach($modulopermisos as $mp){
+			if($mp->modulo <> $moduloatual) $i = 0;
+			$modulopermisosarray[$mp->modulo]['moduloid']               = $mp->moduloid;
+			$modulopermisosarray[$mp->modulo]['ruta']                   = $mp->ruta;
+			$modulopermisosarray[$mp->modulo]['permisos'][$i]['id']     = $mp->modulopermisoid;
+			$modulopermisosarray[$mp->modulo]['permisos'][$i]['nombre'] = $mp->permisodesc;
+			$modulopermisosarray[$mp->modulo]['permisos'][$i]['ruta']   = $mp->permiso;
+			$moduloatual                                                = $mp->modulo;
+			$i++;
+		}
+
+		$rolmodulopermisosarray = [];
+		$rolmodulopermisos = DB::table(config('csgtcancerbero.rolmodulopermisos.tabla') . ' AS rmp')
+			->leftJoin(config('csgtcancerbero.roles.tabla') . ' AS roles','roles.rolid','=','rmp.rolid')
+			->select('rmp.' . config('csgtcancerbero.rolmodulopermisos.modulopermisoid').' AS modulopermiso',
+					'roles.' . config('csgtcancerbero.roles.nombre') . ' AS rol')
+			->where('rmp.' . config('csgtcancerbero.rolmodulopermisos.rolid'), $id)
+			->get();
+		$nombrerol = DB::table(config('csgtcancerbero.roles.tabla'))
+			->where('rolid', $id)
+			->first()
+			->{config('csgtcancerbero.roles.nombre')};
+
+		foreach($rolmodulopermisos as $rmp)
+			$rolmodulopermisosarray[] = $rmp->modulopermiso;
+
+		$breadcrumb = '<ol class="breadcrumb">
+			<li><a href="/roles">Roles</a></li>
+			<li>Asignación de permisos</li>
+			<li class="active">' . $nombrerol . '</li>
+		</ol>';
+
+		$rolModelo = Authrol::find($id);
+
+		return view('roles.edit')
+			->with('nombre', $rolModelo->nombre)
+			->with('descripcion', $rolModelo->descripcion)
+			->with('titulo', 'Roles')
+			->with('breadcrumb', $breadcrumb)
+			->with('template', config('csgtcancerbero.template','layouts.app'))
+			->with('rolid', Crypt::encrypt($id))
+			->with('modulopermisos', $modulopermisosarray)
+			->with('rolmodulopermisos', $rolmodulopermisosarray);
+	}
+
+	public function update(Request $request, $id){
+		$rolid = Crypt::decrypt($request->id);
+		$modulopermisos = $request->modulopermisos;
+		dd('holi');
+
+		Authrolmodulopermiso::where('rolid', $rolid)->delete();
+
+		if($modulopermisos) {
+			foreach($modulopermisos as $modulopermiso){
+				$authmodulopermiso = new Authrolmodulopermiso;
+				$authmodulopermiso->rolid = $rolid;
+				$authmodulopermiso->modulopermisoid = $modulopermiso;
+				$authmodulopermiso->save();
+			}
+		}
+
+		return redirect()->to('/roles')
+			->with('flashMessage', config('cancerbero::mensajerolmodulopermisoexitoso'))
+			->with('flashType', 'success');
 	}
 }
