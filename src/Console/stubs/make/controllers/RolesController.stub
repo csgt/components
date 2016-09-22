@@ -98,7 +98,11 @@ class RolesController extends CrudController {
 	public function update(Request $request, $id){
 		$rolid = Crypt::decrypt($request->id);
 		$modulopermisos = $request->modulopermisos;
-		dd('holi');
+		
+		$rol = Authrol::find($rolid);
+		$rol->nombre = $request->nombre;
+		$rol->descripcion = $request->descripcion;
+		$rol->save();
 
 		Authrolmodulopermiso::where('rolid', $rolid)->delete();
 
