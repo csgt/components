@@ -13,15 +13,22 @@ class MakeComponentsCommand extends Command {
   protected $description = 'Vista components';
 
   protected $views = [
-    'roles/edit.stub' => 'roles/edit.blade.php',
+    'roles/edit.stub'    => 'roles/edit.blade.php',
+    'usuarios/edit.stub' => 'usuarios/edit.blade.php',
   ];
 
   protected $controllers = [
-    'RolesController'
+    'RolesController',
+    'UsuariosController'
   ];
 
   protected $models = [
     'Authmenu' => 'Menu',
+  ];
+
+  protected $langs = [
+    'es/usuario.stub'       => 'es/usuario.php',
+    'en/usuario.stub'       => 'en/usuario.php',
   ];
 
   public function fire() {
@@ -29,6 +36,7 @@ class MakeComponentsCommand extends Command {
     $this->exportControllers(); 
     $this->exportModels();
     $this->exportViews();
+    $this->exportLangs();
 
     file_put_contents(
       base_path('routes/web.php'),
@@ -57,6 +65,14 @@ class MakeComponentsCommand extends Command {
     }
   }
 
+  protected function exportLangs() {
+    foreach ($this->langs as $key => $value) {
+      copy(
+        __DIR__.'/stubs/make/lang/'.$key,
+        base_path('resources/lang/'.$value)
+      );
+    }
+  }
 
   protected function exportModels() {
     foreach ($this->models as $modelName => $folder) {
@@ -71,6 +87,10 @@ class MakeComponentsCommand extends Command {
 
     if (! is_dir(resource_path('views/roles'))) {
       mkdir(resource_path('views/roles'), 0755, true);
+    }
+
+    if (! is_dir(resource_path('views/usuarios'))) {
+      mkdir(resource_path('views/usuarios'), 0755, true);
     }
 
     if (! is_dir(app_path('Models/Menu'))) {

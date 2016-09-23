@@ -12,7 +12,6 @@
 
 
 	Route::group($routedata, function() {
-		Route::resource('usuarios', 'usuariosController');
 		Route::resource('logaccesos','logController');
 	});
 

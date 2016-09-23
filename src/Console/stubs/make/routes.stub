@@ -1,2 +1,5 @@
 //=== CSGTCOMPONENTS
-Route::resource('roles','RolesController');	
+Route::group(['middleware'=>['auth', 'cancerbero', 'menu']], function(){
+	Route::resource('roles','RolesController');	
+	Route::resource('usuarios','UsuariosController');	
+});

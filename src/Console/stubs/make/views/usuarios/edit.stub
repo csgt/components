@@ -1,7 +1,8 @@
 @extends($template)
 
-@section('content')
+@section('breadcrumb', $breadcrumb)
 
+@section('content')
 	<h3 class="text-primary">{!!$data?'Editar':'Nuevo'!!} Usuario</h3>
 	@if(Session::get('message'))
 		<div class="alert alert-{!! Session::get('type') !!} alert-dismissable .mrgn-top">
@@ -9,61 +10,68 @@
 			{!! Session::get('message') !!}
 		</div>
 	@endif
-	{!! Form::open(array('url' => URL::route('usuarios.store'), 'method' => 'POST', 'class'=>'form-horizontal', 'role'=>'form', 'id'=>'frmUsuario')) !!}
-		{!!Form::hidden('id', $data?$id:'') !!}
-		@foreach(config('csgtlogin.camposeditaradmin') as $campos)
-			<div class="form-group">
-				<label for="{!! $campos['campo'] !!}" class="col-sm-2 control-label">{!! $campos['titulo'] !!}</label>
-				<div class="col-sm-5">
-					<?php $campo = config('csgtlogin.usuario.campo'); ?>
-		      <input 
-						type         = "text" 
-						class        = "form-control"
-						autocomplete = "off" 
-						id           = "{!! $campos['campo'] !!}" 
-						name         = "{!! $campos['campo'] !!}" 
-						placeholder  = "{!! $campos['titulo'] !!}"  
-						value        = "{!! $data?$data->nombre:'' !!}" 
-						autocomplete = "off" 
-		      	data-fv-notempty>
-				</div>
-    	</div>
-    @endforeach
+	@if($data)
+	<form action="/usuarios/{{$id}}" method="POST" class="form-horizontal" id="frmUsuario">
+		<input type="hidden" name="_method" value="PUT"/>
+	@else
+	<form action="/usuarios" method="POST" class="form-horizontal" id="frmUsuario">
+	@endif
+		
+		{{csrf_field()}}
 		<div class="form-group">
-	    <label for="{!! config('csgtlogin.usuario.campo') !!}" class="col-sm-2 control-label">{!! trans('csgtlogin::login.usuario') !!}</label>
+		<label for="{!! trans('login.nombre') !!}" class="col-sm-2 control-label">{!! trans('login.nombre') !!}</label>
 	    <div class="col-sm-5">
-	    	<?php $campo = config('csgtlogin.usuario.campo'); ?>
+	    	<?php $campo = 'nombre'; ?>
 	      <input 
 					type         = "text" 
 					class        = "form-control" 
-					id           = "{!! config('csgtlogin.usuario.campo') !!}" 
-					name         = "{!! config('csgtlogin.usuario.campo') !!}" 
-					placeholder  = "{!! trans('csgtlogin::login.usuario') !!}"  
+					id           = "nombre" 
+					name         = "nombre" 
+					placeholder  = "{!! trans('login.nombre') !!}"  
+					value        = "{!! $data?$data->nombre:'' !!}" 
+					autocomplete = "off" 
+	      	data-fv-notempty = "true"
+	      	>
+	    </div>
+		</div>
+
+		<div class="form-group">
+	    <label for="{!! trans('login.email') !!}" class="col-sm-2 control-label">{!! trans('login.email') !!}</label>
+	    <div class="col-sm-5">
+	    	<?php $campo = 'email'; ?>
+	      <input 
+					type         = "text" 
+					class        = "form-control" 
+					id           = "email" 
+					name         = "email" 
+					placeholder  = "{!! trans('login.email') !!}"  
 					value        = "{!! $data?$data->email:'' !!}" 
 					autocomplete = "off" 
 	      	data-fv-notempty = "true"
-	      	<?php if(config('csgtlogin.usuario.tipo')=='email') { ?>
+	      	<?php if(config('csgtlogin.usuario.tipo','email')=='email') { ?>
 	      	data-fv-emailAddress = "true"
-	      	data-fv-emailAddress-message = "Correo inválido"
+	      	data-fv-emailAddress-message = "{{trans('login.incorrect')}}"
 					<?php } ?>
 	      	>
 	    </div>
 	  </div>
 	  <div class="form-group">
-      <label for="rolid" class="col-sm-2 control-label">Rol</label>
+      <label for="rolid" class="col-sm-2 control-label">{{trans('cancerbero.rol')}}</label>
       
     	<div class="col-sm-10">
       	<select name="rolid[]" class="selectpicker" multiple autocomplete="off">
       		@foreach ($roles as $rol)
-      			<option value="{{Crypt::encrypt($rol->rolid)}}" {!! (in_array($rol->rolid, $uroles) ? 'selected="selected"':'') !!}>{{$rol->nombre}}</option>
+      			<option value="{{Crypt::encrypt($rol->rolid)}}" {!! (in_array($rol->rolid, $usuarioroles) ? 'selected="selected"':'') !!}>{{$rol->nombre}}</option>
       		@endforeach
       	</select>
       </div>
     </div>
 	  <div class="form-group">
-	    <div class="col-sm-2">&nbsp;</div>
-	    <div class="col-sm-10">
-	    	{!!Form::checkbox('activo',1, ($data?($data->activo?true:false):true) )!!} <label for="activo">Activo</label>
+	    <div class="col-sm-offset-2 col-sm-10">
+	    	<label>
+	    		<input type="checkbox" name="activo" value="1" {{($data?($data->activo?'checked':''):'checked')}}>
+	    		{{ trans('usuario.activo') }}
+	    	</label>
 	    </div>
 	  </div>
 	  @if(config('csgtlogin.vencimiento.habilitado'))
@@ -75,7 +83,7 @@
 	  </div>
 	  @endif
     <div class="form-group">
-      <label for="password" class="col-sm-2 control-label">{!! trans('csgtlogin::login.contrasena') !!}</label>
+      <label for="password" class="col-sm-2 control-label">{!! trans('login.password') !!}</label>
       <div class="col-sm-5">
         <input 
 					type                         = "password" 
@@ -83,14 +91,14 @@
 					name                         = "password" 
 					id                           = "password" 
 					autocomplete								 = "off"
-					placeholder                  = "{!! trans('csgtlogin::login.contrasena') !!}" 
+					placeholder                  = "{!! trans('login.password') !!}" 
 					autocomplete                 = "off" 
 					data-fv-identical            = "true" 
 					data-fv-identical-field      = "password2" 
-					data-fv-identical-message    = "Las passwords no concuerdan"
+					data-fv-identical-message    = "{{ trans('login.passwordnoigual') }}"
 					data-fv-stringlength         = "true"
 					data-fv-stringlength-min     = "6"
-					data-fv-stringlength-message = "La {!!config('csgtlogin.password.titulo')!!} debe tener al menos 6 caracteres."
+					data-fv-stringlength-message = "{{ trans('login.passwordmin') }}"
 					{!!$data?'':'data-fv-notEmpty = "true"'!!}>
       </div>
        <div class="col-sm-5">
@@ -99,33 +107,37 @@
 					class                        = "form-control" 
 					name                         = "password2" 
 					autocomplete								 = "off"
-					placeholder                  = "{!! trans('csgtlogin::login.repetir') . ' ' . trans('csgtlogin::login.contrasena') !!}" 
+					placeholder                  = "{!! trans('login.repetirpassword') !!}" 
 					autocomplete                 = "off" 
 					data-fv-identical            = "true" 
 					data-fv-identical-field      = "password" 
-					data-fv-identical-message    = "Las passwords no concuerdan"
+					data-fv-identical-message    = "{{ trans('login.passwordnoigual') }}"
 					data-fv-stringlength         = "true"
 					data-fv-stringlength-min     = "6"
-					data-fv-stringlength-message = "La {!!config('csgtlogin.password.titulo')!!} debe tener al menos 6 caracteres.">
+					data-fv-stringlength-message = "{{ trans('login.passwordmin') }}" >
       </div>
     </div>
     @if($data)
     <div class="form-group">
-	  	<div class="col-sm-2">&nbsp;</div>
-	    <div class="col-sm-10">
-	    	<small>* Dejar en blanco para no cambiar {!! config('csgtlogin.password.titulo') !!}.</small>
+	    <div class="col-sm-offset-2 col-sm-10">
+	    	<small>{{ trans('usuario.nocambiarpassword') }}</small>
 	   	</div>
 	  </div>
 	  @endif
     <div class="form-group">
-	    <div class="col-sm-2">&nbsp;</div>
-	    <div class="col-sm-10">
-	      {!! Form::submit('Guardar', array('class' => 'btn btn-primary')) !!}
+	    <div class="col-sm-offset-2 col-sm-10">
+	    	<input type="submit" value="Guardar" class="btn btn-primary">
 	    </div>
 	  </div>
-	{!! Form::close() !!}
+	</form>
+@stop
+@section('javascript')
 	<script type="text/javascript">
 		$(function() {
+			@if(!$data)
+				$('input').value = "";
+			@endif
+
 			$('.selectpicker').selectize();
 
 			$('#frmUsuario').formValidation({

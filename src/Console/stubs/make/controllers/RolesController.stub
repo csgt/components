@@ -24,13 +24,19 @@ class RolesController extends CrudController {
 			$this->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
 	}
 
+	public function create(Request $request){
+		return $this->edit($request, 0);
+	}
+
 	public function edit(Request $request, $id) {
-		try {
-			$id = Crypt::decrypt($id);
-		} 
-		catch (Exception $e) {
-			session()->set('mensajeError', 'ID inválido');
-			return redirect()->to('/cancerbero/error');
+		if ($id !== 0) {
+			try {
+				$id = Crypt::decrypt($id);
+			} 
+			catch (Exception $e) {
+				session()->set('mensajeError', 'ID inválido');
+				return redirect()->to('/cancerbero/error');
+			}
 		}
 
 		$modulopermisosarray = [];
@@ -62,50 +68,67 @@ class RolesController extends CrudController {
 		}
 
 		$rolmodulopermisosarray = [];
-		$rolmodulopermisos = DB::table(config('csgtcancerbero.rolmodulopermisos.tabla') . ' AS rmp')
-			->leftJoin(config('csgtcancerbero.roles.tabla') . ' AS roles','roles.rolid','=','rmp.rolid')
-			->select('rmp.' . config('csgtcancerbero.rolmodulopermisos.modulopermisoid').' AS modulopermiso',
-					'roles.' . config('csgtcancerbero.roles.nombre') . ' AS rol')
-			->where('rmp.' . config('csgtcancerbero.rolmodulopermisos.rolid'), $id)
-			->get();
-		$nombrerol = DB::table(config('csgtcancerbero.roles.tabla'))
-			->where('rolid', $id)
-			->first()
-			->{config('csgtcancerbero.roles.nombre')};
 
-		foreach($rolmodulopermisos as $rmp)
-			$rolmodulopermisosarray[] = $rmp->modulopermiso;
+		if ($id !== 0) {
+
+			$rolmodulopermisos = DB::table(config('csgtcancerbero.rolmodulopermisos.tabla') . ' AS rmp')
+				->leftJoin(config('csgtcancerbero.roles.tabla') . ' AS roles','roles.rolid','=','rmp.rolid')
+				->select('rmp.' . config('csgtcancerbero.rolmodulopermisos.modulopermisoid').' AS modulopermiso',
+						'roles.' . config('csgtcancerbero.roles.nombre') . ' AS rol')
+				->where('rmp.' . config('csgtcancerbero.rolmodulopermisos.rolid'), $id)
+				->get();
+			$nombrerol = DB::table(config('csgtcancerbero.roles.tabla'))
+				->where('rolid', $id)
+				->first()
+				->{config('csgtcancerbero.roles.nombre')};
+			
+			foreach($rolmodulopermisos as $rmp)
+				$rolmodulopermisosarray[] = $rmp->modulopermiso;
+		}
+		else {
+			$nombrerol = 'Nuevo';
+		}
 
 		$breadcrumb = '<ol class="breadcrumb">
 			<li><a href="/roles">Roles</a></li>
-			<li>Asignación de permisos</li>
 			<li class="active">' . $nombrerol . '</li>
 		</ol>';
 
 		$rolModelo = Authrol::find($id);
 
 		return view('roles.edit')
-			->with('nombre', $rolModelo->nombre)
-			->with('descripcion', $rolModelo->descripcion)
+			->with('data', $rolModelo)
 			->with('titulo', 'Roles')
 			->with('breadcrumb', $breadcrumb)
 			->with('template', config('csgtcancerbero.template','layouts.app'))
-			->with('rolid', Crypt::encrypt($id))
+			->with('rolid', ($id==0?0:Crypt::encrypt($id)) )
 			->with('modulopermisos', $modulopermisosarray)
 			->with('rolmodulopermisos', $rolmodulopermisosarray);
 	}
 
+	public function store(Request $request) {
+		return $this->update($request, 0);
+	}
+
 	public function update(Request $request, $id){
-		$rolid = Crypt::decrypt($request->id);
+		if ($id<>0) { 
+			$rolid = Crypt::decrypt($request->id);
+			$rol = Authrol::find($rolid);
+			$rol->nombre      = $request->nombre;
+			$rol->descripcion = $request->descripcion;
+			$rol->save();
+			Authrolmodulopermiso::where('rolid', $rolid)->delete();
+		}
+		else {
+			$rol = new Authrol;
+			$rol->nombre      = $request->nombre;
+			$rol->descripcion = $request->descripcion;
+			$rol->save();
+			$rolid = $rol->rolid;
+		}
+
 		$modulopermisos = $request->modulopermisos;
-		
-		$rol = Authrol::find($rolid);
-		$rol->nombre = $request->nombre;
-		$rol->descripcion = $request->descripcion;
-		$rol->save();
-
-		Authrolmodulopermiso::where('rolid', $rolid)->delete();
-
+	
 		if($modulopermisos) {
 			foreach($modulopermisos as $modulopermiso){
 				$authmodulopermiso = new Authrolmodulopermiso;
