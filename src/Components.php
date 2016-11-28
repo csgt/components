@@ -1,6 +1,6 @@
 <?php 
 namespace Csgt\Components;
-use DB, Auth;
+use DB, Auth, Exception;
 
 class Components {
   private static $monedas = array(
