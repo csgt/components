@@ -111,7 +111,7 @@ class RolesController extends CrudController {
 	}
 
 	public function update(Request $request, $id){
-		if ($id<>0) { 
+		if ($id !== 0) { 
 			$rolid = Crypt::decrypt($request->id);
 			$rol = Authrol::find($rolid);
 			$rol->nombre      = $request->nombre;
