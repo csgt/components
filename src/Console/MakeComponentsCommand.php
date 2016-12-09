@@ -31,6 +31,8 @@ class MakeComponentsCommand extends Command {
     'en/usuario.stub'       => 'en/usuario.php',
   ];
 
+  protected $routesFile = 'routes/core/components.php';
+
   public function fire() {
     $this->createDirectories();
     $this->exportControllers(); 
@@ -39,9 +41,8 @@ class MakeComponentsCommand extends Command {
     $this->exportLangs();
 
     file_put_contents(
-      base_path('routes/web.php'),
-      file_get_contents(__DIR__.'/stubs/make/routes.stub'),
-      FILE_APPEND
+      base_path($routesFile),
+      file_get_contents(__DIR__.'/stubs/make/routes.stub')
     );
 
     $this->info('Vistas & Controladores para Components generadas correctamente.');
