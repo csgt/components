@@ -41,7 +41,7 @@ class MakeComponentsCommand extends Command {
     $this->exportLangs();
 
     file_put_contents(
-      base_path($routesFile),
+      base_path($this->routesFile),
       file_get_contents(__DIR__.'/stubs/make/routes.stub')
     );
 
