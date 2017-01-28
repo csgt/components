@@ -3,10 +3,8 @@
 namespace Csgt\Components\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Console\AppNamespaceDetectorTrait;
 
 class MakeComponentsCommand extends Command {
-  use AppNamespaceDetectorTrait;
 
   protected $signature = 'make:csgtcomponents';
 
