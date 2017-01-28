@@ -36,7 +36,7 @@ class ComponentsServiceProvider extends ServiceProvider {
       Console\MakeComponentsCommand::class
     ]);
 
-    $this->singleton('components', function($app) {
+    $this->app->singleton('components', function($app) {
     	return new Components;
   	});
 	}
