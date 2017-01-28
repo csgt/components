@@ -118,7 +118,7 @@ class MakeComponentsCommand extends Command {
   }
 
   protected function getAppNamespace(){
-    return 'App\'';
+    return 'App\\';
   }
 
 }
