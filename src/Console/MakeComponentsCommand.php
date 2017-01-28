@@ -95,6 +95,10 @@ class MakeComponentsCommand extends Command {
     if (! is_dir(app_path('Models/Menu'))) {
       mkdir(app_path('Models/Menu'), 0755, true);
     }
+
+    if (! is_dir(base_path('routes/core'))) {
+      mkdir(base_path('routes/core'), 0755, true);
+    }
   }
 
   protected function compileControllerStub($aPath, $aExtension = "stub") {
