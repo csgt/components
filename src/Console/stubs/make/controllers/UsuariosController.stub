@@ -39,8 +39,12 @@ class UsuariosController extends CrudController {
 			$nombreUsuario = $data->nombre;
 		}
 	
-		$roles = Authrol::where('rolid', '<>', config('csgtcancerbero.rolbackdoor'))
-			->orderBy('nombre')->get();
+		$roles = Authrol::orderBy('nombre');
+
+		if(!Cancerbero::isGod()) {
+			$roles->where('rolid', '<>', config('csgtcancerbero.rolbackdoor'));
+		}
+		$roles = $roles->get();
 
 		$breadcrumb = '<ol class="breadcrumb">
 			<li><a href="/usuarios">Usuarios</a></li>
