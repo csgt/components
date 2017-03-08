@@ -78,7 +78,7 @@ class UsuariosController extends CrudController {
 		$usuario->email = $request->email;
 		$pass = $request->password;
 
-		if ($pass !== '')
+		if ($pass)
 			$usuario->password = bcrypt($pass);
 
 		$usuario->activo =  ($request->activo?1:0);
