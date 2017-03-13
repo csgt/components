@@ -1,18 +1,21 @@
 <?php 
 namespace Csgt\Components;
-use DB, Auth, Exception;
+use DB, Auth, Exception, SoapClient;
+use Carbon\Carbon;
 
 class Components {
-  private static $monedas = array(
-        array('country' => 'Guatemala', 'currency' => 'Q', 'singular' => 'QUETZAL', 'plural' => 'QUETZALES', 'symbol', 'Q'),
-        array('country' => 'Estados Unidos', 'currency' => 'USD', 'singular' => 'DÓLAR', 'plural' => 'DÓLARES', 'symbol', 'US$'));
+  private static $monedas = [
+    ['country' => 'Guatemala', 'currency' => 'Q', 'singular' => 'QUETZAL', 'plural' => 'QUETZALES', 'symbol', 'Q'],
+    ['country' => 'Guatemala', 'currency' => 'GTQ', 'singular' => 'QUETZAL', 'plural' => 'QUETZALES', 'symbol', 'GTQ'],
+    ['country' => 'Estados Unidos', 'currency' => 'USD', 'singular' => 'DÓLAR', 'plural' => 'DÓLARES', 'symbol', 'US$']
+  ];
 
   private static function convertGroup($n, $aEscribirCeros=false) {
-    $unidades = array('','UNO ','DOS ','TRES ','CUATRO ','CINCO ','SEIS ','SIETE ','OCHO ','NUEVE ','DIEZ ',
-    'ONCE ','DOCE ','TRECE ','CATORCE ','QUINCE ','DIECISEIS ','DIECISIETE ','DIECIOCHO ','DIECINUEVE ','VEINTE ');
-    $decenas  = array('VENTI','TREINTA ','CUARENTA ','CINCUENTA ','SESENTA ','SETENTA ','OCHENTA ','NOVENTA ','CIEN ');
-    $centenas = array('CIENTO ','DOSCIENTOS ','TRESCIENTOS ','CUATROCIENTOS ','QUINIENTOS ',
-    'SEISCIENTOS ','SETECIENTOS ','OCHOCIENTOS ','NOVECIENTOS ');
+    $unidades = ['','UNO ','DOS ','TRES ','CUATRO ','CINCO ','SEIS ','SIETE ','OCHO ','NUEVE ','DIEZ ',
+    'ONCE ','DOCE ','TRECE ','CATORCE ','QUINCE ','DIECISEIS ','DIECISIETE ','DIECIOCHO ','DIECINUEVE ','VEINTE '];
+    $decenas  = ['VENTI','TREINTA ','CUARENTA ','CINCUENTA ','SESENTA ','SETENTA ','OCHENTA ','NOVENTA ','CIEN '];
+    $centenas = ['CIENTO ','DOSCIENTOS ','TRESCIENTOS ','CUATROCIENTOS ','QUINIENTOS ',
+    'SEISCIENTOS ','SETECIENTOS ','OCHOCIENTOS ','NOVECIENTOS '];
 
     $output = '';
 
@@ -48,9 +51,9 @@ class Components {
   }
 
   public static function numeroALetras($aNumero, $aMoneda=null, $aDecimales=0, $aEscribirCeros=false) {
-    $aNumero = str_replace(',', '', $aNumero); //Quitar las comas  
+    $aNumero       = str_replace(',', '', $aNumero); //Quitar las comas  
     $enteroDecimal = explode('.', $aNumero);
-    $aNumero = $enteroDecimal[0];
+    $aNumero       = $enteroDecimal[0];
 
     if ($aMoneda !== null) {
       try {
@@ -61,27 +64,30 @@ class Components {
         $moneda = array_values($moneda);
 
         if (count($moneda) <= 0) {
-          throw new \Exception("Tipo de moneda inválido");
+          throw new Exception("Tipo de moneda inválido");
           return;
         }
 
         if ($aNumero < 2) {
           $moneda = $moneda[0]['singular'];
-        } else {
+        } 
+        else {
           $moneda = $moneda[0]['plural'];
         }
-      } catch (\Exception $e) {
+      } 
+      catch (Exception $e) {
         echo $e->getMessage();
         return;
       }
-    } else {
+    } 
+    else {
       $moneda = " ";
     }
 
     $converted = '';
 
     if (($aNumero < 0) || ($aNumero > 999999999)) {
-      return 'No es posible convertir el numero a letras';
+      return 'No es posible convertir el número a letras';
     }
 
     $aNumeroStr     = (string) $aNumero;
@@ -125,6 +131,7 @@ class Components {
     }
 
     $converted .= $moneda;
+    $converted = str_replace('  ', ' ', $converted);
     return trim($converted);
   }
 
@@ -163,38 +170,48 @@ class Components {
 	}
 
 	public static function fechaHumanoAMysql($aFecha) {
-		
-		$fh = explode(' ', $aFecha);
-		if (sizeof($fh)==2) 
-			$laFecha = $fh[0];
-		else
-			$laFecha = $aFecha;
+    $fh = explode(' ', $aFecha);
+    if (sizeof($fh)==2) {
+      $formato    = 'd-m-Y H:i';
+      $formatoOut = 'Y-m-d H:i';
+    }
+    else {
+      $formato    = 'd-m-Y';
+      $formatoOut = 'Y-m-d';
+    }
 
-		$partes = explode('/', $laFecha);
-		if (sizeof($partes)==1)
-			$partes = explode('-', $laFecha);
-
-		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ((sizeof($fh)==2)?' ' . $fh[1]:'');
+    try {
+      $fecha = Carbon::createFromFormat($formato, $aFecha);
+      return $fecha->format($formatoOut);
+    } 
+    catch (Exception $e) {
+      return '0000-00-00 00:00';  
+    }
 	}
 
 	public static function fechaMysqlAHumano($aFecha) {
+    $fh = explode(' ', $aFecha);
+    if (sizeof($fh)==2) {
+      $formatoOut = 'd-m-Y H:i';
+      $formato    = 'Y-m-d H:i';
+    }
+    else {
+      $formatoOut = 'd-m-Y';
+      $formato    = 'Y-m-d';
+    }
 
-		$fh = explode(' ', $aFecha);
-		if (sizeof($fh)==2)
-			$laFecha = $fh[0];
-		else
-			$laFecha = $aFecha;
-
-		$partes = explode('/', $laFecha);
-		if (sizeof($partes)==1)
-			$partes = explode('-', $laFecha);
-
-		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ((sizeof($fh)==2)?' ' . $fh[1]:'');
+    try {
+      $fecha = Carbon::createFromFormat($formato, $aFecha);
+      return $fecha->format($formatoOut);
+    } 
+    catch (Exception $e) {
+      return '00-00-0000 00:00';  
+    }
 	}
 
   public static function getTipoCambio() {
     try {
-      $soapClient = new \SoapClient("http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?wsdl",["trace" => 1]);
+      $soapClient = new SoapClient("http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?wsdl",["trace" => 1]);
       $info = $soapClient->__call("TipoCambioDia",[]);
       return $info->TipoCambioDiaResult->CambioDolar->VarDolar->referencia;
     } 
