@@ -19,11 +19,7 @@ class UsuariosController extends CrudController {
 		$this->setCampo(['nombre' =>'Creado', 'campo' => 'created_at', 'tipo'=>'datetime']);
 		$this->setCampo(['nombre' =>'Activo', 'campo' => 'activo', 'tipo'=>'bool']);
 
-		if(!Cancerbero::isGod()) {
-			$this->setPermisos(Cancerbero::tienePermisosCrud('usuarios'));
-		}
-		else
-			$this->setPermisos(['add'=>true, 'edit'=>true,'delete'=>true]);
+		$this->setPermisos("\Cancerbero::tienePermisosCrud", 'usuarios');
 	}
 
 	public function edit(Request $request, $id) {

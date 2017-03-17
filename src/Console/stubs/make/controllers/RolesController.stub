@@ -16,12 +16,14 @@ class RolesController extends CrudController {
 		$this->setCampo(['nombre' =>'Nombre', 'campo' => 'nombre']);
 		$this->setCampo(['nombre' =>'Descripción', 'campo' => 'descripcion']);
 
-		if(!Cancerbero::isGod()) {
-			$this->setPermisos(Cancerbero::tienePermisosCrud('roles'));
-			$this->setWhere('rolid', '<>', Cancerbero::getGodRol());
-		}
-		else
-			$this->setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
+		$this->setPermisos(
+			function() {
+				if(!Cancerbero::isGod()) {
+					$this->setPermisos(Cancerbero::tienePermisosCrud('roles'));
+					$this->setWhere('rolid', '<>', Cancerbero::getGodRol());
+				}
+				return Cancerbero::tienePermisosCrud('roles');
+			}, true);
 	}
 
 	public function create(Request $request){
