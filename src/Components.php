@@ -95,9 +95,9 @@ class Components {
     $millones       = substr($aNumeroStrFill, 0, 3);
     $miles          = substr($aNumeroStrFill, 3, 3);
     
-    if ($aEscribirCeros) 
-      $cientos = $aNumero;
-    else
+    //if ($aEscribirCeros) 
+    //  $cientos = $aNumero;
+    //else
       $cientos = substr($aNumeroStrFill, 6); 
 
     if (intval($millones) > 0) {
