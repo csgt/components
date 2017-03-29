@@ -189,14 +189,14 @@ class Components {
     }
 	}
 
-	public static function fechaMysqlAHumano($aFecha) {
+  public static function fechaMysqlAHumano($aFecha, $aSeparador='-') {
     $fh = explode(' ', $aFecha);
     if (sizeof($fh)==2) {
-      $formatoOut = 'd-m-Y H:i';
+      $formatoOut = 'd' . $aSeparador . 'm' . $aSeparador . 'Y H:i';
       $formato    = 'Y-m-d H:i';
     }
     else {
-      $formatoOut = 'd-m-Y';
+      $formatoOut = 'd' . $aSeparador . 'm' . $aSeparador . 'Y';
       $formato    = 'Y-m-d';
     }
 
@@ -207,7 +207,7 @@ class Components {
     catch (Exception $e) {
       return '00-00-0000 00:00';  
     }
-	}
+  }
 
   public static function getTipoCambio() {
     try {
