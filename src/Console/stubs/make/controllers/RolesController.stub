@@ -9,21 +9,17 @@ use {{namespace}}Models\Cancerbero\Authrol;
 use {{namespace}}Models\Cancerbero\Authrolmodulopermiso;
 
 class RolesController extends CrudController {
-	public function __construct(){
+	public function __construct() {
 		$this->setModelo(new Authrol);
 		$this->setTitulo('Roles');
 
 		$this->setCampo(['nombre' =>'Nombre', 'campo' => 'nombre']);
 		$this->setCampo(['nombre' =>'Descripción', 'campo' => 'descripcion']);
 
-		$this->setPermisos(
-			function() {
-				if(!Cancerbero::isGod()) {
-					$this->setPermisos(Cancerbero::tienePermisosCrud('roles'));
-					$this->setWhere('rolid', '<>', Cancerbero::getGodRol());
-				}
-				return Cancerbero::tienePermisosCrud('roles');
-			}, true);
+		if(!Cancerbero::isGod())
+			$this->setWhere('rolid', '<>', Cancerbero::getGodRol());
+		
+		$this->setPermisos("\Cancerbero::tienePermisosCrud", 'roles');
 	}
 
 	public function create(Request $request){
