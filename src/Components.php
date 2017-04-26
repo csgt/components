@@ -169,14 +169,14 @@ class Components {
 		return DB::select(DB::raw($query));
 	}
 
-	public static function fechaHumanoAMysql($aFecha) {
+	public static function fechaHumanoAMysql($aFecha, $aSeparador='-') {
     $fh = explode(' ', $aFecha);
     if (sizeof($fh)==2) {
-      $formato    = 'd-m-Y H:i';
+      $formato    = 'd' . $aSeparador . 'm' . $aSeparador . 'Y H:i';
       $formatoOut = 'Y-m-d H:i';
     }
     else {
-      $formato    = 'd-m-Y';
+      $formato    = 'd' . $aSeparador . 'm' . $aSeparador . 'Y';
       $formatoOut = 'Y-m-d';
     }
 
