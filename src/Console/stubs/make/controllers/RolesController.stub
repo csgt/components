@@ -32,8 +32,7 @@ class RolesController extends CrudController {
 				$id = Crypt::decrypt($id);
 			} 
 			catch (Exception $e) {
-				session()->set('mensajeError', 'ID inválido');
-				return redirect()->to('/cancerbero/error');
+				abort(501, 'ID inválido');
 			}
 		}
 
