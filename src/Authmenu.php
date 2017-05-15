@@ -49,7 +49,7 @@ class Authmenu {
 			->leftJoin('authmodulopermisos AS mp', 'mp.modulopermisoid','=','m.modulopermisoid')
 			->leftJoin('authmodulos AS mo','mo.moduloid','=','mp.moduloid')
 			->leftJoin('authpermisos AS p','p.permisoid','=','mp.permisoid')
-			->select('m.nombre',DB::raw('CONCAT(mo.nombre,".",p.nombre) AS ruta'),'m.padreid','m.menuid','m.icono')
+			->select('m.nombre',DB::raw("CONCAT(mo.nombre,'.',p.nombre) AS ruta"),'m.padreid','m.menuid','m.icono')
 			->whereIn('m.menuid', $this->menuIds)
 			->orderBy('m.padreid')
 			->orderBy('m.orden')
