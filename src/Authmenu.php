@@ -32,7 +32,7 @@ class Authmenu {
 			->leftJoin('authmodulopermisos AS mp', 'mp.modulopermisoid','=','rmp.modulopermisoid')
 			->leftJoin('authmodulos AS mo','mo.moduloid','=','mp.moduloid')
 			->leftJoin('authpermisos AS p','p.permisoid','=','mp.permisoid')
-			->select('m.menuid', DB::raw('IFNULL(m.padreid,0) AS padreid'))
+			->select('m.menuid', DB::raw('coalesce(m.padreid,0) AS padreid'))
 			->whereIn('rmp.rolid', $usuarioroles)
 			->get();
 		foreach ($permisos as $menu) {
