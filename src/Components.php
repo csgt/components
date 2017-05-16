@@ -1,6 +1,7 @@
 <?php 
 namespace Csgt\Components;
 use DB, Auth, Exception;
+use Carbon\Carbon;
 
 class Components {
   private static $monedas = array(
@@ -167,35 +168,45 @@ class Components {
 		return DB::select(DB::raw($query));
 	}
 
-	public static function fechaHumanoAMysql($aFecha) {
-		
-		$fh = explode(' ', $aFecha);
-		if (sizeof($fh)==2) 
-			$laFecha = $fh[0];
-		else
-			$laFecha = $aFecha;
+	public static function fechaHumanoAMysql($aFecha, $aSeparador='-') {
+    $fh = explode(' ', $aFecha);
+    if (sizeof($fh)==2) {
+      $formato    = 'd' . $aSeparador . 'm' . $aSeparador . 'Y H:i';
+      $formatoOut = 'Y-m-d H:i';
+    }
+    else {
+      $formato    = 'd' . $aSeparador . 'm' . $aSeparador . 'Y';
+      $formatoOut = 'Y-m-d';
+    }
 
-		$partes = explode('/', $laFecha);
-		if (sizeof($partes)==1)
-			$partes = explode('-', $laFecha);
+    try {
+      $fecha = Carbon::createFromFormat($formato, $aFecha);
+      return $fecha->format($formatoOut);
+    } 
+    catch (Exception $e) {
+      return '0000-00-00 00:00';  
+    }
+  }
 
-		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ((sizeof($fh)==2)?' ' . $fh[1]:'');
-	}
+  public static function fechaMysqlAHumano($aFecha, $aSeparador='-') {
+    $fh = explode(' ', $aFecha);
+    if (sizeof($fh)==2) {
+      $formatoOut = 'd' . $aSeparador . 'm' . $aSeparador . 'Y H:i';
+      $formato    = 'Y-m-d H:i';
+    }
+    else {
+      $formatoOut = 'd' . $aSeparador . 'm' . $aSeparador . 'Y';
+      $formato    = 'Y-m-d';
+    }
 
-	public static function fechaMysqlAHumano($aFecha) {
-
-		$fh = explode(' ', $aFecha);
-		if (sizeof($fh)==2)
-			$laFecha = $fh[0];
-		else
-			$laFecha = $aFecha;
-
-		$partes = explode('/', $laFecha);
-		if (sizeof($partes)==1)
-			$partes = explode('-', $laFecha);
-
-		return $partes[2] . '-' . $partes[1] . '-' . $partes[0] . ((sizeof($fh)==2)?' ' . $fh[1]:'');
-	}
+    try {
+      $fecha = Carbon::createFromFormat($formato, $aFecha);
+      return $fecha->format($formatoOut);
+    } 
+    catch (Exception $e) {
+      return '00-00-0000 00:00';  
+    }
+  }
 
   public static function getTipoCambio() {
     try {
