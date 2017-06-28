@@ -25,10 +25,6 @@ class ComponentsServiceProvider extends ServiceProvider {
 		$this->publishes([
       __DIR__.'/config/csgtcomponents.php' => config_path('csgtcomponents.php'),
     ], 'config');
-
-    $this->publishes([
-        __DIR__ . '/../public' => public_path('packages/csgt/components'),
-    ], 'public');
 	}
 
 	public function register() {
@@ -42,7 +38,7 @@ class ComponentsServiceProvider extends ServiceProvider {
 	}
 
 	public function provides() {
-		return array('components');
+		return ['components'];
 	}
 
 }

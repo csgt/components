@@ -1,5 +1,5 @@
 <?php
-return array(
+return [
 	'template'           => 'layouts.app',
 	'usuariossoftdelete' => false,
 		/*
@@ -13,4 +13,4 @@ return array(
 	|
 	*/
 	'routeextras' => [],
-);
+];
