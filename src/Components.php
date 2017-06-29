@@ -169,11 +169,12 @@ class Components {
 		return DB::select(DB::raw($query));
 	}
 
-	public static function fechaHumanoAMysql($aFecha, $aSeparador='-') {
+  public static function fechaHumanoAMysql($aFecha, $aSeparador='/') {
     $fh = explode(' ', $aFecha);
     if (sizeof($fh)==2) {
       $formato    = 'd' . $aSeparador . 'm' . $aSeparador . 'Y H:i';
       $formatoOut = 'Y-m-d H:i';
+      $aFecha = substr($aFecha, 0, 16);
     }
     else {
       $formato    = 'd' . $aSeparador . 'm' . $aSeparador . 'Y';
@@ -187,13 +188,14 @@ class Components {
     catch (Exception $e) {
       return '0000-00-00 00:00';  
     }
-	}
+  }
 
-  public static function fechaMysqlAHumano($aFecha, $aSeparador='-') {
+  public static function fechaMysqlAHumano($aFecha, $aSeparador='/') {
     $fh = explode(' ', $aFecha);
     if (sizeof($fh)==2) {
       $formatoOut = 'd' . $aSeparador . 'm' . $aSeparador . 'Y H:i';
       $formato    = 'Y-m-d H:i';
+      $aFecha = substr($aFecha, 0, 16);
     }
     else {
       $formatoOut = 'd' . $aSeparador . 'm' . $aSeparador . 'Y';
