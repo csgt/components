@@ -31,9 +31,9 @@ class MakeComponentsCommand extends Command {
 
   protected $routesFile = 'routes/core/components.php';
 
-  public function fire() {
+  public function handle() {
     $this->createDirectories();
-    $this->exportControllers(); 
+    $this->exportControllers();
     $this->exportModels();
     $this->exportViews();
     $this->exportLangs();
