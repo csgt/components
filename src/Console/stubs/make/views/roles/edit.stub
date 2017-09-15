@@ -6,8 +6,8 @@
 	{!! $breadcrumb !!}
 @stop
 @section('content')
-	
-	@if(Session::get('flashMessage')) 
+
+	@if(Session::get('flashMessage'))
     <div class="alert alert-{!! Session::get('flashType', 'danger') !!} alert-dismissable">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
       {!!Session::get('flashMessage')!!}
@@ -20,65 +20,69 @@
 	<form method="POST" action="/roles">
 	@endif
 		{{ csrf_field() }}
-		
-		<div clas="row">
-			<div class="form-group col-sm-12">
-				<label for="nombre">Nombre</label>
-				<input name="nombre" type="text" class="form-control" id="nombre" value="{{ ($data?$data->nombre:'') }}"/>
-			</div>
-			<div class="form-group col-sm-12">
-				<label for="descripcion">Descripción</label>
-				<input name="descripcion" type="text" class="form-control" id="descripcion" value="{{ ($data?$data->descripcion:'') }}"/>
-			</div>
-
-			<div class="col-sm-12">
-				<a href="javascript:void(0);" class="lnkTodosC">Todos</a> | 
-				<a href="javascript:void(0);" class="lnkNingunoC">Ninguno</a>
-			</div>
-
-			<div class="clearfix"></div>
-			<br>
-			@foreach($modulopermisos as $modulo => $val )
-				<div class="col-sm-4">
-					<div class="box box-default collapsed-box">
-						<div class="box-header with-border" data-widget="expandable">
-					    <h3 class="box-title">{!! $modulo !!}</h3>
-					    <div class="box-tools pull-right">
-					    	<button class="btn btn-box-tool" data-widget="collapse">
-					    		<i class="fa fa-plus"></i>
-					    	</button> 
-					    <!--
-					  	
-					  	 -->
-					  	</div>
-					  	<div class="clearfix"></div>
-					  </div>
-
-					  <div class="box-body">
-					  	@foreach($val['permisos'] as $permiso)
-								<div class="col-sm-6 checkbox">
-									<label>
-									<input type="checkbox" value="{!! $permiso['id'] !!}" id="mp{!! $permiso['id'] !!}" name="modulopermisos[]" class="chks chk{!! $val['moduloid'] !!}" {!! (in_array($permiso['id'], $rolmodulopermisos)) ? 'checked="true"' : '' !!}>
-									{!! $permiso['nombre'] !!}
-									</label>
-								</div>
-					  	@endforeach
-					  </div>
-
-					  <div class="box-footer">
-					  		<a href="javascript:void(0);" id="tod{!! $val['moduloid'] !!}" class="lnkTodos">Todos</a> | 
-					  		<a href="javascript:void(0);" id="nin{!! $val['moduloid'] !!}" class="lnkNinguno">Ninguno</a>
-					  </div>
+		<div class="box box-default">
+			<div class="box-body">
+				<div clas="row">
+					<div class="form-group col-sm-12">
+						<label for="nombre">Nombre</label>
+						<input name="nombre" type="text" class="form-control" id="nombre" value="{{ ($data?$data->nombre:'') }}"/>
 					</div>
-				</div>
-				@if($loop->iteration%3==0)
-					<div class="clearfix"></div>
-				@endif
-			@endforeach
-			<div class="col-md-12">{!!Form::submit('Guardar', array('class' => 'btn btn-primary'))!!}</div>
-			<input type="hidden" name="id" value="{{ $rolid }}" />
-		</div>
+					<div class="form-group col-sm-12">
+						<label for="descripcion">Descripción</label>
+						<input name="descripcion" type="text" class="form-control" id="descripcion" value="{{ ($data?$data->descripcion:'') }}"/>
+					</div>
 
+					<div class="col-sm-12">
+						<a href="javascript:void(0);" class="lnkTodosC">Todos</a> |
+						<a href="javascript:void(0);" class="lnkNingunoC">Ninguno</a>
+					</div>
+
+					<div class="clearfix"></div>
+					<br>
+					@foreach($modulopermisos as $modulo => $val )
+						<div class="col-sm-4">
+							<div class="box box-default collapsed-box">
+								<div class="box-header with-border" data-widget="expandable">
+							    <h3 class="box-title">{!! $modulo !!}</h3>
+							    <div class="box-tools pull-right">
+							    	<button class="btn btn-box-tool" data-widget="collapse">
+							    		<i class="fa fa-plus"></i>
+							    	</button>
+							    <!--
+
+							  	 -->
+							  	</div>
+							  	<div class="clearfix"></div>
+							  </div>
+
+							  <div class="box-body">
+							  	@foreach($val['permisos'] as $permiso)
+										<div class="col-sm-6 checkbox">
+											<label>
+											<input type="checkbox" value="{!! $permiso['id'] !!}" id="mp{!! $permiso['id'] !!}" name="modulopermisos[]" class="chks chk{!! $val['moduloid'] !!}" {!! (in_array($permiso['id'], $rolmodulopermisos)) ? 'checked="true"' : '' !!}>
+											{!! $permiso['nombre'] !!}
+											</label>
+										</div>
+							  	@endforeach
+							  </div>
+
+							  <div class="box-footer">
+							  		<a href="javascript:void(0);" id="tod{!! $val['moduloid'] !!}" class="lnkTodos">Todos</a> |
+							  		<a href="javascript:void(0);" id="nin{!! $val['moduloid'] !!}" class="lnkNinguno">Ninguno</a>
+							  </div>
+							</div>
+						</div>
+						@if($loop->iteration%3==0)
+							<div class="clearfix"></div>
+						@endif
+					@endforeach
+					<div class="col-md-12">
+						<input type="submit" class="btn btn-primary" value="Guardar">
+					</div>
+					<input type="hidden" name="id" value="{{ $rolid }}" />
+				</div>
+			</div>
+		</div>
 	</form>
 	<div class="clearfix"></div>
 @stop
@@ -86,7 +90,7 @@
 <script>
 	$(document).ready(function(){
 		function pintar(){
-			$.each($('.box'), function(){
+			$.each($('.col-sm-4 .box'), function(){
 				$(this).removeClass('box-default');
 				$(this).removeClass('box-success');
 				$(this).removeClass('box-danger');
