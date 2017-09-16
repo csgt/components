@@ -13,7 +13,6 @@
   },
   "autoload": {
     "classmap": [
-      "src/Http/Controllers",
       "src/Http/Middleware"
     ],
     "psr-4": {
