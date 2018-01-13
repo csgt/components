@@ -1,7 +1,9 @@
-<?php namespace namespace Csgt\Components\Facades;
- 
+<?php
+
+namespace namespace Csgt\Components\Facades;
+
 use Illuminate\Support\Facades\Facade;
- 
+
 class Components extends Facade {
-  protected static function getFacadeAccessor() { return 'components'; }
+    protected static function getFacadeAccessor() { return 'components'; }
 }

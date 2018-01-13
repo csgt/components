@@ -1,0 +1,32 @@
+version: '2'
+services:
+    nginx:
+        build:
+            context: ./
+            dockerfile: dockerfiles/nginx.docker
+        volumes:
+            - ./:/var/www
+        ports:
+            - "8080:80"
+        links:
+            - php
+    php:
+        build:
+            context: ./
+            dockerfile: dockerfiles/php.docker
+        volumes:
+            - ./:/var/www
+        links:
+            - mysql
+        environment:
+            - "DB_PORT=3306"
+            - "DB_HOST=mysql"
+            - "REDIS_PORT=6379"
+            - "REDIS_HOST=cache"
+    mysql:
+        image: mysql:5.6
+        environment:
+            - "MYSQL_ROOT_PASSWORD=secret"
+            - "MYSQL_DATABASE=nombre"
+        ports:
+            - "33061:3306"
