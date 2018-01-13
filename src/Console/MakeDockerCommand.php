@@ -21,6 +21,10 @@ class MakeDockerCommand extends Command
 
     public function handle()
     {
+        if (is_dir(base_path('dockerfiles'))) {
+            $this->error('Configuraciones docker ya fueron generadas anteriormente.');
+            return;
+        }
         $this->createDirectories();
         $this->exportFiles();
         $this->info('Configuraciónes docker generadas correctamente.');
