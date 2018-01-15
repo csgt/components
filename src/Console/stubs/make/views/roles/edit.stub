@@ -9,15 +9,15 @@
 
 	@if(Session::get('flashMessage'))
     <div class="alert alert-{!! Session::get('flashType', 'danger') !!} alert-dismissable">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      {!!Session::get('flashMessage')!!}
+      	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      	{!!Session::get('flashMessage')!!}
     </div>
   @endif
   @if($data)
-	<form method="POST" action="/roles/{{ $rolid }}">
+	<form method="POST" action="/catalogos/roles/{{ $rolid }}">
 		<input type="hidden" name="_method" value="PUT"/>
 	@else
-	<form method="POST" action="/roles">
+	<form method="POST" action="/catalogos/roles">
 	@endif
 		{{ csrf_field() }}
 		<div class="box box-default">
@@ -48,9 +48,6 @@
 							    	<button class="btn btn-box-tool" data-widget="collapse">
 							    		<i class="fa fa-plus"></i>
 							    	</button>
-							    <!--
-
-							  	 -->
 							  	</div>
 							  	<div class="clearfix"></div>
 							  </div>

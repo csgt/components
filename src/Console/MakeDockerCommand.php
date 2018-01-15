@@ -14,9 +14,11 @@ class MakeDockerCommand extends Command
     protected $files = [
         'docker/docker-compose.yml.example.stub' => 'docker-compose.yml.example',
         'docker/docker-compose.yml.stub'         => 'docker-compose.yml',
+        'docker/dockerfiles/mysql.docker.stub'   => 'dockerfiles/mysql.docker',
         'docker/dockerfiles/php.docker.stub'     => 'dockerfiles/php.docker',
         'docker/dockerfiles/nginx.docker.stub'   => 'dockerfiles/nginx.docker',
         'docker/dockerfiles/vhost.conf.stub'     => 'dockerfiles/vhost.conf',
+        'docker/dockerfiles/my.cnf.stub'         => 'dockerfiles/my.cnf',
     ];
 
     public function handle()

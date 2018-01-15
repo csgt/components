@@ -11,13 +11,13 @@ class MakeComponentsCommand extends Command
     protected $description = 'Vista components';
 
     protected $views = [
-        'roles/edit.stub'    => 'roles/edit.blade.php',
-        'usuarios/edit.stub' => 'usuarios/edit.blade.php',
+        'roles/edit.stub'    => 'catalogos/roles/edit.blade.php',
+        'usuarios/edit.stub' => 'catalogos/usuarios/edit.blade.php',
     ];
 
     protected $controllers = [
-        'RolesController',
-        'UsuariosController'
+        'Catalogos/RolesController',
+        'Catalogos/UsuariosController'
     ];
 
     protected $models = [
@@ -89,12 +89,16 @@ class MakeComponentsCommand extends Command
 
     protected function createDirectories()
     {
-        if (! is_dir(resource_path('views/roles'))) {
-            mkdir(resource_path('views/roles'), 0755, true);
+        if (! is_dir(app_path('Http/Controllers/Catalogos'))) {
+            mkdir(app_path('Http/Controllers/Catalogos'), 0755, true);
         }
 
-        if (! is_dir(resource_path('views/usuarios'))) {
-            mkdir(resource_path('views/usuarios'), 0755, true);
+        if (! is_dir(resource_path('views/catalogos/roles'))) {
+            mkdir(resource_path('views/catalogos/roles'), 0755, true);
+        }
+
+        if (! is_dir(resource_path('views/catalogos/usuarios'))) {
+            mkdir(resource_path('views/catalogos/usuarios'), 0755, true);
         }
 
         if (! is_dir(app_path('Models/Menu'))) {

@@ -1,4 +1,6 @@
-<?php namespace {{namespace}}Http\Controllers;
+<?php
+
+namespace {{namespace}}Http\Controllers\Catalogos;
 
 use Illuminate\Http\Request;
 
@@ -34,7 +36,7 @@ class UsuariosController extends CrudController {
 				->pluck('rolid')->toArray();
 			$nombreUsuario = $data->nombre;
 		}
-	
+
 		$roles = Authrol::orderBy('nombre');
 
 		if(!Cancerbero::isGod()) {
@@ -43,11 +45,12 @@ class UsuariosController extends CrudController {
 		$roles = $roles->get();
 
 		$breadcrumb = '<ol class="breadcrumb">
-			<li><a href="/usuarios">Usuarios</a></li>
+			<li>Catálogos</li>
+			<li><a href="/catalogos/usuarios">Usuarios</a></li>
 			<li class="active">' . $nombreUsuario . '</li>
 		</ol>';
 
-		return view('usuarios.edit')
+		return view('catalogos.usuarios.edit')
 			->with('templateincludes',['selectize','formvalidation'])
 			->with('template', config('csgtcomponents.template','layouts.app'))
 			->with('breadcrumb', $breadcrumb)
@@ -99,8 +102,8 @@ class UsuariosController extends CrudController {
 			$ur->usuarioid = $usuario->usuarioid;
 			$ur->save();
 		}
-			
-		return redirect()->route('usuarios.index');
+
+		return redirect()->route('catalogos.usuarios.index');
 	}
 
 	public function store(Request $request) {
