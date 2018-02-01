@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Csgt\Components;
 use DB, Auth, Exception, SoapClient;
 use Carbon\Carbon;
@@ -13,7 +13,7 @@ class Components {
   private static function convertGroup($n, $aEscribirCeros=false) {
     $unidades = ['','UNO ','DOS ','TRES ','CUATRO ','CINCO ','SEIS ','SIETE ','OCHO ','NUEVE ','DIEZ ',
     'ONCE ','DOCE ','TRECE ','CATORCE ','QUINCE ','DIECISEIS ','DIECISIETE ','DIECIOCHO ','DIECINUEVE ','VEINTE '];
-    $decenas  = ['VENTI','TREINTA ','CUARENTA ','CINCUENTA ','SESENTA ','SETENTA ','OCHENTA ','NOVENTA ','CIEN '];
+    $decenas  = ['VEINTI','TREINTA ','CUARENTA ','CINCUENTA ','SESENTA ','SETENTA ','OCHENTA ','NOVENTA ','CIEN '];
     $centenas = ['CIENTO ','DOSCIENTOS ','TRESCIENTOS ','CUATROCIENTOS ','QUINIENTOS ',
     'SEISCIENTOS ','SETECIENTOS ','OCHOCIENTOS ','NOVECIENTOS '];
 
@@ -21,37 +21,38 @@ class Components {
 
     if ($aEscribirCeros) {
       for($d=0;$d<strlen($n);$d++) {
-        if ($n[$d]==0) 
+        if ($n[$d]==0)
           $output .= 'CERO ';
-        else 
+        else
           break;
       }
     }
     $n = str_pad($n, 3, '0', STR_PAD_LEFT);
 
 
-    if ($n == '100') 
+    if ($n == '100')
       $output = "CIEN ";
     else if ($n[0] !== '0') {
-      $output = $centenas[$n[0] - 1];   
+      $output = $centenas[$n[0] - 1];
     }
-    
+
     $k = intval(substr($n,1));
 
     if ($k <= 20) {
       $output .= $unidades[$k];
-    } 
+    }
     else {
-      if(($k > 30) && ($n[2] !== '0')) 
+      if(($k > 30) && ($n[2] !== '0'))
         $output .= sprintf('%sY %s', $decenas[intval($n[1]) - 2], $unidades[intval($n[2])]);
-      else 
+      else
         $output .= sprintf('%s%s', $decenas[intval($n[1]) - 2], $unidades[intval($n[2])]);
     }
     return $output;
   }
 
   public static function numeroALetras($aNumero, $aMoneda=null, $aDecimales=0, $aEscribirCeros=false) {
-    $aNumero       = str_replace(',', '', $aNumero); //Quitar las comas  
+    $aNumero       = str_replace(',', '', $aNumero); //Quitar las comas
+    $aNumero       = number_format($aNumero, $aDecimales, '.','');
     $enteroDecimal = explode('.', $aNumero);
     $aNumero       = $enteroDecimal[0];
 
@@ -70,16 +71,16 @@ class Components {
 
         if ($aNumero < 2) {
           $moneda = $moneda[0]['singular'];
-        } 
+        }
         else {
           $moneda = $moneda[0]['plural'];
         }
-      } 
+      }
       catch (Exception $e) {
         echo $e->getMessage();
         return;
       }
-    } 
+    }
     else {
       $moneda = " ";
     }
@@ -94,21 +95,21 @@ class Components {
     $aNumeroStrFill = str_pad($aNumeroStr, 9, '0', STR_PAD_LEFT);
     $millones       = substr($aNumeroStrFill, 0, 3);
     $miles          = substr($aNumeroStrFill, 3, 3);
-    
-    if ($aEscribirCeros) 
+
+    if ($aEscribirCeros)
      $cientos = $aNumero;
     else
-      $cientos = substr($aNumeroStrFill, 6); 
+      $cientos = substr($aNumeroStrFill, 6);
 
     if (intval($millones) > 0) {
-      if ($millones == '001') 
+      if ($millones == '001')
         $converted .= 'UN MILLON ';
-      else if (intval($millones) > 0) 
+      else if (intval($millones) > 0)
         $converted .= sprintf('%sMILLONES ', self::convertGroup($millones));
     }
-    
+
     if (intval($miles) > 0) {
-      if ($miles == '001') 
+      if ($miles == '001')
         $converted .= 'MIL ';
       else if (intval($miles) > 0)
         $converted .= sprintf('%sMIL ', self::convertGroup($miles));
@@ -116,14 +117,15 @@ class Components {
 
     //Cientos
     if (intval($cientos) > 0) {
-      if (($cientos == '001')&&($aEscribirCeros==false)) 
+      if (($cientos == '001')&&($aEscribirCeros==false))
         $converted .= 'UN ';
-      else if (intval($cientos) > 0) 
+      else if (intval($cientos) > 0)
         $converted .= sprintf('%s ', self::convertGroup($cientos, $aEscribirCeros));
     }
-    
+
     //Decimales
     if (count($enteroDecimal)>1) {
+      //dd($enteroDecimal);
       $enteroDecimal[1] = substr($enteroDecimal[1],0,$aDecimales);
       if (intval($enteroDecimal[1])!=0) {
         $converted .= ' PUNTO ' . self::numeroALetras($enteroDecimal[1], null, 0, true) . ' ';
@@ -135,7 +137,7 @@ class Components {
     return trim($converted);
   }
 
- 
+
 	public static function getMenuForRole() {
 
 		$usuarioroles = DB::table('authusuarioroles')
@@ -143,8 +145,8 @@ class Components {
 			->lists('rolid');
 
 		$query = 'SELECT * FROM authmenu WHERE ruta IN (
-			SELECT 
-				CONCAT(IF(m.nombre<>\'index\',m.nombre,\'/\'), IF(p.nombre<>\'index\',CONCAT(\'/\',p.nombre),\'\')) AS ruta 
+			SELECT
+				CONCAT(IF(m.nombre<>\'index\',m.nombre,\'/\'), IF(p.nombre<>\'index\',CONCAT(\'/\',p.nombre),\'\')) AS ruta
 			FROM
 				authrolmodulopermisos rmp
 				LEFT JOIN authmodulopermisos mp ON (mp.modulopermisoid=rmp.modulopermisoid)
@@ -155,8 +157,8 @@ class Components {
 			)
 			OR menuid IN (
 			SELECT padreid FROM authmenu WHERE ruta IN (
-			SELECT 
-			 CONCAT(IF(m.nombre<>\'index\',m.nombre,\'/\'), IF(p.nombre<>\'index\',CONCAT(\'/\',p.nombre),\'\')) AS ruta 
+			SELECT
+			 CONCAT(IF(m.nombre<>\'index\',m.nombre,\'/\'), IF(p.nombre<>\'index\',CONCAT(\'/\',p.nombre),\'\')) AS ruta
 			FROM
 				authrolmodulopermisos rmp
 				LEFT JOIN authmodulopermisos mp ON (mp.modulopermisoid=rmp.modulopermisoid)
@@ -184,9 +186,9 @@ class Components {
     try {
       $fecha = Carbon::createFromFormat($formato, $aFecha);
       return $fecha->format($formatoOut);
-    } 
+    }
     catch (Exception $e) {
-      return '0000-00-00 00:00';  
+      return '0000-00-00 00:00';
     }
   }
 
@@ -205,9 +207,9 @@ class Components {
     try {
       $fecha = Carbon::createFromFormat($formato, $aFecha);
       return $fecha->format($formatoOut);
-    } 
+    }
     catch (Exception $e) {
-      return '00-00-0000 00:00';  
+      return '00-00-0000 00:00';
     }
   }
 
@@ -216,7 +218,7 @@ class Components {
       $soapClient = new SoapClient("http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?wsdl",["trace" => 1]);
       $info = $soapClient->__call("TipoCambioDia",[]);
       return $info->TipoCambioDiaResult->CambioDolar->VarDolar->referencia;
-    } 
+    }
     catch (Exception $e) {
       return 0;
     }
