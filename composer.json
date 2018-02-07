@@ -18,5 +18,12 @@
             "Csgt\\Components\\": "src"
         }
     },
-    "minimum-stability" : "stable"
+    "minimum-stability" : "stable",
+     "extra": {
+        "laravel": {
+            "providers": [
+                "Csgt\\Components\\ComponentsServiceProvider"
+            ]
+        }
+    }
 }
