@@ -1,0 +1,39 @@
+version: '3'
+services:
+    nginx:
+        build:
+            context: ./
+            dockerfile: dockerfiles/nginx.docker
+        volumes:
+            - ./:/var/www
+        ports:
+            - "80:80"
+        links:
+            - php
+    php:
+        build:
+            context: ./
+            dockerfile: dockerfiles/php.docker
+        volumes:
+            - ./:/var/www
+        links:
+            - mysql
+        environment:
+            - "DB_PORT=3306"
+            - "DB_HOST=mysql"
+            - "REDIS_PORT=6379"
+            - "REDIS_HOST=cache"
+    mysql:
+        build:
+            context: ./
+            dockerfile: dockerfiles/mysql.docker
+        volumes:
+            - mysql-data:/var/lib/mysql
+        restart: always
+        environment:
+            - "MYSQL_ROOT_PASSWORD=secret"
+            - "MYSQL_DATABASE=nombredb"
+        ports:
+            - "3306:3306"
+volumes:
+    mysql-data:

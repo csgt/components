@@ -1,0 +1,14 @@
+FROM php:7.1-fpm
+ADD ./dockerfiles/init.sh /usr/local/bin/init.sh
+
+RUN echo 'alias migrate="php artisan migrate"' >> ~/.bashrc
+RUN echo 'alias rollback="php artisan migrate:rollback"' >> ~/.bashrc
+RUN echo 'alias seed="php artisan db:seed"' >> ~/.bashrc
+RUN echo 'alias seedgod="php artisan db:seed --class=GodSeeder"' >> ~/.bashrc
+RUN echo 'alias cda="composer dump-autoload"' >> ~/.bashrc
+
+RUN apt-get update && apt-get install -y libmcrypt-dev mysql-client \
+    && docker-php-ext-install mcrypt pdo_mysql
+CMD /usr/local/bin/init.sh
+
+WORKDIR /var/www
