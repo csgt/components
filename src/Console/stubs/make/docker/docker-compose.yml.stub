@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
     nginx:
         build:
@@ -7,7 +7,7 @@ services:
         volumes:
             - ./:/var/www
         ports:
-            - "8080:80"
+            - "80:80"
         links:
             - php
     php:
@@ -24,9 +24,16 @@ services:
             - "REDIS_PORT=6379"
             - "REDIS_HOST=cache"
     mysql:
-        image: mysql:5.6
+        build:
+            context: ./
+            dockerfile: dockerfiles/mysql.docker
+        volumes:
+            - mysql-data:/var/lib/mysql
+        restart: always
         environment:
             - "MYSQL_ROOT_PASSWORD=secret"
-            - "MYSQL_DATABASE=nombre"
+            - "MYSQL_DATABASE=nombredb"
         ports:
-            - "33061:3306"
+            - "3306:3306"
+volumes:
+    mysql-data:

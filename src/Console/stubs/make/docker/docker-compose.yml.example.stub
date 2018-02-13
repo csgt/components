@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
     nginx:
         build:
@@ -32,8 +32,8 @@ services:
         restart: always
         environment:
             - "MYSQL_ROOT_PASSWORD=secret"
-            - "MYSQL_DATABASE=lepegue2018"
+            - "MYSQL_DATABASE=nombredb"
         ports:
-            - "33061:3306"
+            - "3306:3306"
 volumes:
     mysql-data:
