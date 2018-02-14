@@ -6,6 +6,7 @@ services:
             dockerfile: dockerfiles/nginx.docker
         volumes:
             - ./:/var/www
+        restart: always
         ports:
             - "80:80"
         links:
@@ -16,6 +17,7 @@ services:
             dockerfile: dockerfiles/php.docker
         volumes:
             - ./:/var/www
+        restart: always
         links:
             - mysql
         environment:
@@ -32,7 +34,7 @@ services:
         restart: always
         environment:
             - "MYSQL_ROOT_PASSWORD=secret"
-            - "MYSQL_DATABASE=lepegue2018"
+            - "MYSQL_DATABASE=nombredb"
         ports:
             - "33061:3306"
 volumes:
