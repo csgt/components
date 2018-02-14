@@ -6,6 +6,7 @@ services:
             dockerfile: dockerfiles/nginx.docker
         volumes:
             - ./:/var/www
+        restart: always
         ports:
             - "80:80"
         links:
@@ -16,6 +17,7 @@ services:
             dockerfile: dockerfiles/php.docker
         volumes:
             - ./:/var/www
+        restart: always
         links:
             - mysql
         environment:
