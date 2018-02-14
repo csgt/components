@@ -22,9 +22,11 @@ class ComponentsServiceProvider extends ServiceProvider
             return new Components;
         });
 
-        $this->commands([
-            Console\MakeDockerCommand::class
-        ]);
+        $this->app->bindShared('command.make.csgtdocker', function ($app) {
+            return new MakeDockerCommand;
+        });
+
+        $this->commands(['command.make.csgtdocker']);
     }
 
     public function provides()
