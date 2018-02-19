@@ -1,0 +1,10 @@
+<?php
+
+namespace {{namespace}}Http\Controllers\Catalogos;
+
+use Illuminate\Http\Request;
+
+use Csgt\Components\Http\Controllers\UsersController as CSUsersController;
+
+class UsersController extends CSUsersController {
+}

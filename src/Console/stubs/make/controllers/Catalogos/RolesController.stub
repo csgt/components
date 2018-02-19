@@ -1,0 +1,11 @@
+<?php
+
+namespace {{namespace}}Http\Controllers\Catalogos;
+
+use Illuminate\Http\Request;
+use Csgt\Components\Http\Controllers\RolesController as CSRolesController;
+
+class RolesController extends CSRolesController;
+{
+
+}

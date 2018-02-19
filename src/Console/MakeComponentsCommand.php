@@ -10,10 +10,7 @@ class MakeComponentsCommand extends Command
 
     protected $description = 'Vista components';
 
-    protected $views = [
-        'roles/edit.stub'    => 'catalogos/roles/edit.blade.php',
-        'usuarios/edit.stub' => 'catalogos/usuarios/edit.blade.php',
-    ];
+    protected $views = [];
 
     protected $controllers = [
         'Catalogos/RolesController',
@@ -21,7 +18,7 @@ class MakeComponentsCommand extends Command
     ];
 
     protected $models = [
-        'Authmenu' => 'Menu',
+        'Menu' => 'Menu',
     ];
 
     protected $langs = [
