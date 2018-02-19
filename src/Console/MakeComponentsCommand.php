@@ -14,7 +14,7 @@ class MakeComponentsCommand extends Command
 
     protected $controllers = [
         'Catalogos/RolesController',
-        'Catalogos/UsuariosController'
+        'Catalogos/UsersController'
     ];
 
     protected $models = [
