@@ -9,6 +9,7 @@ use Cancerbero;
 use Crypt;
 use DB;
 use Exception;
+use Auth;
 use {{namespace}}Models\Cancerbero\Authrol;
 use {{namespace}}Models\Cancerbero\Authrolmodulopermiso;
 

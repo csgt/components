@@ -1,9 +1,8 @@
-<?php 
+<?php
 //=== CSGTCOMPONENTS
-Route::group(['middleware' => ['auth', 'cancerbero', 'menu']], function() {
-	Route::resource('roles','RolesController');	
-	Route::resource('usuarios','UsuariosController');	
+Route::namespace('Catalogos')->prefix('catalogos')->name('catalogos.')->group(function () {
+    Route::resource('roles', 'RolesController');
+    Route::resource('usuarios', 'UsuariosController');
 });
-Route::group(['middleware' => ['auth', 'menu']], function() {
-	Route::resource('perfil', 'Auth\ProfileController');
-});
+
+Route::resource('perfil', 'Auth\ProfileController');
