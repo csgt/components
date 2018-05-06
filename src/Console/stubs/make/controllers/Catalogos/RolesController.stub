@@ -24,13 +24,11 @@ class RolesController extends CrudController
         $this->setCampo(['nombre' =>'Descripción', 'campo' => 'descripcion']);
 
         $this->middleware(function ($request, $next) {
-            $this->setWhere('usuarioid', Auth::id());
+            if (!Cancerbero::isGod()) {
+                $this->setWhere('rolid', '<>', Cancerbero::getGodRol());
+            }
             return $next($request);
         });
-
-        if (!Cancerbero::isGod()) {
-            $this->setWhere('rolid', '<>', Cancerbero::getGodRol());
-        }
 
         $this->setPermisos("\Cancerbero::tienePermisosCrud", 'catalogos.roles');
     }
@@ -105,7 +103,7 @@ class RolesController extends CrudController
         }
 
         $breadcrumb = '<ol class="breadcrumb">
-        	<li>Catálogos</li>
+            <li>Catálogos</li>
             <li><a href="/catalogos/roles">Roles</a></li>
             <li class="active">' . $nombrerol . '</li>
         </ol>';
