@@ -16,10 +16,10 @@
         </div>
     @endif
     @if($data)
-    <form action="/usuarios/{{$id}}" method="POST" class="form-horizontal" id="frmUsuario">
+    <form action="/catalogos/usuarios/{{$id}}" method="POST" class="form-horizontal" id="frmUsuario">
         <input type="hidden" name="_method" value="PUT"/>
     @else
-    <form action="/usuarios" method="POST" class="form-horizontal" id="frmUsuario">
+    <form action="/catalogos/usuarios" method="POST" class="form-horizontal" id="frmUsuario">
     @endif
 
         {{csrf_field()}}
