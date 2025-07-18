@@ -1,35 +1,50 @@
 <?php
 namespace Csgt\Components\Http\Controllers;
-use Illuminate\Routing\Controller, Crud;
 
-class crudController extends Controller {
+use Crud;
+use Crypt;
+use Illuminate\Routing\Controller;
 
-	public function index() {
-		return Crud::index();
-	}
+class crudController extends Controller
+{
 
-	public function create() {
-		return Crud::create(0);
-	}
+    public function index()
+    {
+        return Crud::index();
+    }
 
-	public function store() {
-		return Crud::store();
-	}
+    public function create()
+    {
+        if (config('csgtcrud.usar_encripcion')) {
+            return Crud::create(Crypt::encrypt(0));
+        }
 
-	public function show($id) {
-		return Crud::getData($id);
-	}
+        return Crud::create(0);
+    }
 
-	public function edit($id) {
-		return Crud::create($id);
-	}
+    public function store()
+    {
+        return Crud::store();
+    }
 
-	public function update($id) {
-		return Crud::store($id);
-	}
+    public function show($id)
+    {
+        return Crud::getData($id);
+    }
 
-	public function destroy($id) {
-		return Crud::destroy($id);
-	}
-	
+    public function edit($id)
+    {
+        return Crud::create($id);
+    }
+
+    public function update($id)
+    {
+        return Crud::store($id);
+    }
+
+    public function destroy($id)
+    {
+        return Crud::destroy($id);
+    }
+
 }
