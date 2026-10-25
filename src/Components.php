@@ -187,7 +187,7 @@ class Components
 			) AND padreid IS NOT NULL
 			) ORDER BY padreid, orden';
 
-        return DB::select(DB::raw($query));
+        return DB::select($query);
     }
 
     public static function fechaHumanoAMysql($aFecha, $aSeparador = '/')
