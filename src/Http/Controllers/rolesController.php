@@ -1,26 +1,30 @@
 <?php
+
 namespace Csgt\Components\Http\Controllers;
-use Crud, Cancerbero;
 
-class rolesController extends crudController {
+use Crud;
+use Cancerbero;
 
-	public function __construct() {
-		Crud::setExport(true);
-		Crud::setTitulo('Roles');
-		Crud::setTablaId('rolid');
-		Crud::setTabla('authroles');
-		Crud::setTemplate(config('csgtcomponents::config.template','template.template'));
-		
-		Crud::setCampo(array('nombre'=>'Nombre','campo'=>'nombre','tipo'=>'string'));
-		Crud::setCampo(array('nombre'=>'Descripci&oacute;n','campo'=>'descripcion','tipo'=>'string'));
+class rolesController extends crudController
+{
+    public function __construct()
+    {
+        Crud::setExport(true);
+        Crud::setTitulo('Roles');
+        Crud::setTablaId('rolid');
+        Crud::setTabla('authroles');
+        Crud::setTemplate(config('csgtcomponents.template', 'template.template'));
 
-		if(!Cancerbero::isGod()) {
-			Crud::setPermisos(Cancerbero::tienePermisosCrud('roles'));
-			Crud::setWhere('rolid', '<>', Cancerbero::getGodRol());
-		}
-		else
-			Crud::setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
-			
-		Crud::setBotonExtra(array('url'=>'cancerbero/asignar/{id}', 'class'=>'warning', 'icon'=>'glyphicon glyphicon-lock', 'titulo'=>'Asignar Permisos'));
-	}
+        Crud::setCampo(array('nombre' => 'Nombre','campo' => 'nombre','tipo' => 'string'));
+        Crud::setCampo(array('nombre' => 'Descripci&oacute;n','campo' => 'descripcion','tipo' => 'string'));
+
+        if (!Cancerbero::isGod()) {
+            Crud::setPermisos(Cancerbero::tienePermisosCrud('roles'));
+            Crud::setWhere('rolid', '<>', Cancerbero::getGodRol());
+        } else {
+            Crud::setPermisos(array('add' => true, 'edit' => true,'delete' => true));
+        }
+
+        Crud::setBotonExtra(array('url' => 'cancerbero/asignar/{id}', 'class' => 'warning', 'icon' => 'glyphicon glyphicon-lock', 'titulo' => 'Asignar Permisos'));
+    }
 }

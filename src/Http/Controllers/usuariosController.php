@@ -1,148 +1,170 @@
 <?php
+
 namespace Csgt\Components\Http\Controllers;
 
-use \Csgt\Components\Authusuario;
-use Crud, Cancerbero, Crypt, DB, Input, Session, Hash, Redirect, Auth;
-class usuariosController extends crudController {
+use Csgt\Components\Authusuario;
+use Csgt\Components\Support\QueryCompatibility;
+use Illuminate\Support\Facades\Request;
+use Crud;
+use Cancerbero;
+use Crypt;
+use DB;
+use Session;
+use Hash;
+use Redirect;
+use Auth;
 
-	public function __construct() {
-		Crud::setExport(true);
-		Crud::setTitulo('Usuarios');
-		Crud::setTablaId('usuarioid');
-		Crud::setTabla('authusuarios');
-		Crud::setTemplate(config('csgtcomponents.config.template','template.template'));
+class usuariosController extends crudController
+{
+    public function __construct()
+    {
+        Crud::setExport(true);
+        Crud::setTitulo('Usuarios');
+        Crud::setTablaId('usuarioid');
+        Crud::setTabla('authusuarios');
+        Crud::setTemplate(config('csgtcomponents.template', 'template.template'));
 
-		if(config('csgtcomponents::usuariossoftdelete')) 
-			Crud::setSoftDelete(true);
+        if (config('csgtcomponents.usuariossoftdelete')) {
+            Crud::setSoftDelete(true);
+        }
 
-		Crud::setCampo(['nombre'=>'Nombre','campo'=>'authusuarios.nombre']);
-		Crud::setCampo(['nombre'=>'Email','campo'=>'authusuarios.email']);
-		
-		if(config('csgtcancerbero.multiplesroles')===false) {
-			Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
-			Crud::setCampo(['nombre'=>'Rol','campo'=>'r.nombre']);
-		}
-	
-		Crud::setCampo(['nombre'=>'Creado','campo'=>'authusuarios.created_at', 'tipo'=>'datetime']);
-		Crud::setCampo(['nombre'=>'Activo','campo'=>'authusuarios.activo','tipo'=>'bool']);
+        Crud::setCampo(['nombre' => 'Nombre','campo' => 'authusuarios.nombre']);
+        Crud::setCampo(['nombre' => 'Email','campo' => 'authusuarios.email']);
 
-		if(!Cancerbero::isGod()) {
-			Crud::setPermisos(Cancerbero::tienePermisosCrud('usuarios'));
-			if(config('csgtcancerbero.multiplesroles')===false) 
-				Crud::setWhere('authusuarios.rolid', '<>', Cancerbero::getGodRol());
-		}
-		else
-			Crud::setPermisos(array('add'=>true, 'edit'=>true,'delete'=>true));
-	}
+        if (config('csgtcancerbero.multiplesroles') === false) {
+            Crud::setLeftJoin('authroles AS r', 'authusuarios.rolid', '=', 'r.rolid');
+            Crud::setCampo(['nombre' => 'Rol','campo' => 'r.nombre']);
+        }
 
-	public function edit($id) {
-		$data = DB::table('authusuarios')
-			->where('usuarioid', Crypt::decrypt($id))
-			->first();
+        Crud::setCampo(['nombre' => 'Creado','campo' => 'authusuarios.created_at', 'tipo' => 'datetime']);
+        Crud::setCampo(['nombre' => 'Activo','campo' => 'authusuarios.activo','tipo' => 'bool']);
 
-		$roles = DB::table('authroles')
-			->select('nombre','rolid')
-			->orderBy('nombre');
+        if (!Cancerbero::isGod()) {
+            Crud::setPermisos(Cancerbero::tienePermisosCrud('usuarios'));
+            if (config('csgtcancerbero.multiplesroles') === false) {
+                Crud::setWhere('authusuarios.rolid', '<>', Cancerbero::getGodRol());
+            }
+        } else {
+            Crud::setPermisos(array('add' => true, 'edit' => true,'delete' => true));
+        }
+    }
 
-		$roles->where('rolid','<>',config('csgtcancerbero.rolbackdoor'));
-		
-		if(config('csgtcancerbero.multiplesroles')===false)
-			if ($data) {
-				$roles->orWhere('rolid', $data->rolid);
-			}
+    public function edit($id)
+    {
+        $data = DB::table('authusuarios')
+            ->where('usuarioid', Crypt::decrypt($id))
+            ->first();
 
-		$roles = $roles->get();
+        $roles = DB::table('authroles')
+            ->select('nombre', 'rolid')
+            ->orderBy('nombre');
 
-		$uroles = array();
-		if(config('csgtcancerbero.multiplesroles')===true) {
-			$uroles = DB::table('authusuarioroles')
-				->where('usuarioid', Crypt::decrypt($id))
-				->lists('rolid');
-		}
+        $roles->where('rolid', '<>', config('csgtcancerbero.rolbackdoor'));
 
-		return view('csgtcomponents::usuarioEdit')
-			->with('templateincludes',['selectize','formvalidation'])
-			->with('template', config('csgtcomponents.config.template','template.template'))
-			->with('roles', $roles)
-			->with('data', $data)
-			->with('uroles', $uroles)
-			->with('id', $id);
-	}
+        if (config('csgtcancerbero.multiplesroles') === false) {
+            if ($data) {
+                $roles->orWhere('rolid', $data->rolid);
+            }
+        }
 
-	public function create() {
-    return self::edit(Crypt::encrypt(0));
-	}
+        $roles = $roles->get();
 
-	public function store() {
-		$id = Input::get('id');
+        $uroles = array();
+        if (config('csgtcancerbero.multiplesroles') === true) {
+            $uroles = QueryCompatibility::column(
+                DB::table('authusuarioroles')->where('usuarioid', Crypt::decrypt($id)),
+                'rolid'
+            );
+        }
 
-		$pass = Input::get('password');
-		if ($id=='')
-			$usuario = new Authusuario;
-		else
-			$usuario = Authusuario::find(Crypt::decrypt($id));
+        return view('csgtcomponents::usuarioEdit')
+            ->with('templateincludes', ['selectize','formvalidation'])
+            ->with('template', config('csgtcomponents.template', 'template.template'))
+            ->with('roles', $roles)
+            ->with('data', $data)
+            ->with('uroles', $uroles)
+            ->with('id', $id);
+    }
 
-		$usuario->nombre = Input::get('nombre');
-		$usuario->email  = Input::get('email');
+    public function create()
+    {
+        return self::edit(Crypt::encrypt(0));
+    }
 
-		if ($pass<>'')
-			$usuario->password = Hash::make(Input::get('password'));
-		$usuario->activo = (Input::has('activo')?1:0);
+    public function store()
+    {
+        $id = Request::input('id');
 
-		//Ahora validamos si la password debe ser cambiada
-		if (config('csgtlogin.vencimiento.habilitado')) {
-			if(Input::has('vencimiento')) {
-				$usuario->{config('csgtlogin.vencimiento.campo')} = date_create();
-			}
-		}
+        $pass = Request::input('password');
+        if ($id == '') {
+            $usuario = new Authusuario();
+        } else {
+            $usuario = Authusuario::find(Crypt::decrypt($id));
+        }
+
+        $usuario->nombre = Request::input('nombre');
+        $usuario->email  = Request::input('email');
+
+        if ($pass <> '') {
+            $usuario->password = Hash::make(Request::input('password'));
+        }
+        $usuario->activo = (Request::has('activo') ? 1 : 0);
+
+        //Ahora validamos si la password debe ser cambiada
+        if (config('csgtlogin.vencimiento.habilitado')) {
+            if (Request::has('vencimiento')) {
+                $usuario->{config('csgtlogin.vencimiento.campo')} = date_create();
+            }
+        }
 
 
-		if(config('csgtcancerbero.multiplesroles')===false) {
-			$usuario->rolid  = Crypt::decrypt(Input::get('rolid'));
-			$usuario->save();
-		}
-		else{
-			$usuario->save();
-			$roles = Input::get('rolid');
-			//Borramos todos los roles actuales
-			DB::table('authusuarioroles')->where('usuarioid', $usuario->usuarioid)->delete();
+        if (config('csgtcancerbero.multiplesroles') === false) {
+            $usuario->rolid  = Crypt::decrypt(Request::input('rolid'));
+            $usuario->save();
+        } else {
+            $usuario->save();
+            $roles = Request::input('rolid', array());
+            //Borramos todos los roles actuales
+            DB::table('authusuarioroles')->where('usuarioid', $usuario->usuarioid)->delete();
 
-			foreach($roles as $rol) {
-				DB::table('authusuarioroles')->insert(
-					[
-						'rolid'      => Crypt::decrypt($rol),
-						'usuarioid'  => $usuario->usuarioid,
-						'created_at' => date_create(),
-						'updated_at' => date_create()
-					]);
-			}
-		}		
-		
-		return Redirect::route('usuarios.index');
-	}
+            foreach ($roles as $rol) {
+                DB::table('authusuarioroles')->insert(
+                    [
+                        'rolid'      => Crypt::decrypt($rol),
+                        'usuarioid'  => $usuario->usuarioid,
+                        'created_at' => date_create(),
+                        'updated_at' => date_create()
+                    ]
+                );
+            }
+        }
 
-	public function destroy($aId) {
+        return Redirect::route('usuarios.index');
+    }
 
-		try{
-			if (Crud::getSoftDelete()){
-				$query = DB::table('authusuarios')
-					->where('usuarioid', Crypt::decrypt($aId))
-					->update(array('deleted_at'=>date_create(), config('csgtlogin.password.campo') =>''));
-			}
-			else
-				$query = DB::table('authusuarios')
-					->where('usuarioid', Crypt::decrypt($aId))
-					->delete();
+    public function destroy($aId)
+    {
 
-			Session::flash('message', 'Registro borrado exitosamente');
-			Session::flash('type', 'warning');
+        try {
+            if (Crud::getSoftDelete()) {
+                $query = DB::table('authusuarios')
+                    ->where('usuarioid', Crypt::decrypt($aId))
+                    ->update(array('deleted_at' => date_create(), config('csgtlogin.password.campo') => ''));
+            } else {
+                $query = DB::table('authusuarios')
+                        ->where('usuarioid', Crypt::decrypt($aId))
+                        ->delete();
+            }
 
-		} catch (\Exception $e) {
-			Session::flash('message', 'Error al borrar campo. Revisar datos relacionados.');
-			Session::flash('type', 'danger');
-		}
+            Session::flash('message', 'Registro borrado exitosamente');
+            Session::flash('type', 'warning');
 
-		return Redirect::to('/usuarios');
-	}
+        } catch (\Exception $e) {
+            Session::flash('message', 'Error al borrar campo. Revisar datos relacionados.');
+            Session::flash('type', 'danger');
+        }
+
+        return Redirect::to('/usuarios');
+    }
 
 }

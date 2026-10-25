@@ -1,4 +1,5 @@
 <?php
+
 namespace Csgt\Components;
 
 use Illuminate\Support\ServiceProvider;
@@ -20,8 +21,13 @@ class ComponentsServiceProvider extends ServiceProvider
         if (!$this->app->routesAreCached()) {
             require __DIR__.'/Http/routes.php';
         }
-        $router->middleware('menu', '\Csgt\Components\Http\Middleware\MenuMW');
-        $router->middleware('god', '\Csgt\Components\Http\Middleware\GodMW');
+        if (method_exists($router, 'aliasMiddleware')) {
+            $router->aliasMiddleware('menu', '\Csgt\Components\Http\Middleware\MenuMW');
+            $router->aliasMiddleware('god', '\Csgt\Components\Http\Middleware\GodMW');
+        } else {
+            $router->middleware('menu', '\Csgt\Components\Http\Middleware\MenuMW');
+            $router->middleware('god', '\Csgt\Components\Http\Middleware\GodMW');
+        }
 
         $this->publishes([
       __DIR__.'/config/csgtcomponents.php' => config_path('csgtcomponents.php'),
@@ -34,8 +40,8 @@ class ComponentsServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app['components'] = $this->app->share(function ($app) {
-            return new Components;
+        $this->app->singleton('components', function ($app) {
+            return new Components();
         });
 
         $this->commands([

@@ -1,4 +1,5 @@
 <?php
+
 namespace Csgt\Components;
 
 use DB;
@@ -6,6 +7,7 @@ use Auth;
 use Exception;
 use SoapClient;
 use Carbon\Carbon;
+use Csgt\Components\Support\QueryCompatibility;
 
 class Components
 {
@@ -39,7 +41,7 @@ class Components
 
         if ($n == '100') {
             $output = "CIEN ";
-        } else if ($n[0] !== '0') {
+        } elseif ($n[0] !== '0') {
             $output = $centenas[$n[0] - 1];
         }
 
@@ -113,7 +115,7 @@ class Components
         if (intval($millones) > 0) {
             if ($millones == '001') {
                 $converted .= 'UN MILLON ';
-            } else if (intval($millones) > 0) {
+            } elseif (intval($millones) > 0) {
                 $converted .= sprintf('%sMILLONES ', self::convertGroup($millones));
             }
 
@@ -122,7 +124,7 @@ class Components
         if (intval($miles) > 0) {
             if ($miles == '001') {
                 $converted .= 'MIL ';
-            } else if (intval($miles) > 0) {
+            } elseif (intval($miles) > 0) {
                 $converted .= sprintf('%sMIL ', self::convertGroup($miles));
             }
 
@@ -132,7 +134,7 @@ class Components
         if (intval($cientos) > 0) {
             if (($cientos == '001') && ($aEscribirCeros == false)) {
                 $converted .= 'UN ';
-            } else if (intval($cientos) > 0) {
+            } elseif (intval($cientos) > 0) {
                 $converted .= sprintf('%s ', self::convertGroup($cientos, $aEscribirCeros));
             }
 
@@ -155,12 +157,15 @@ class Components
     {
         $usuarioroles = [];
         if (config('csgtcancerbero.multiplesroles')) {
-            $usuarioroles = DB::table('authusuarioroles')
-                ->where('usuarioid', Auth::id())
-                ->lists('rolid');
+            $usuarioroles = QueryCompatibility::column(
+                DB::table('authusuarioroles')->where('usuarioid', Auth::id()),
+                'rolid'
+            );
         } else {
             $usuarioroles[] = Auth::user()->rolid;
         }
+
+        $usuarioroles = implode(',', array_map('intval', $usuarioroles));
 
         $query = 'SELECT * FROM authmenu WHERE ruta IN (
 			SELECT
